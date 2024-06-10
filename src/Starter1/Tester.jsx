@@ -4,7 +4,7 @@ import useLoadTextFile from "../useLoadTextFile";
 import "./styles.css";
 
 const Tester = () => {
-  const defaultText = useLoadTextFile("/src/data/sampleText.txt");
+  const defaultText = useLoadTextFile("/src/data/simpleText.txt");
   const [inputText, setInputText] = useState("");
   const [parsedText, setParsedText] = useState("");
 
@@ -42,7 +42,12 @@ const Tester = () => {
         <button onClick={handleParseClick}>Parse</button> */}
       </div>
       <div className="output-section">
-        {!!parsedText && <ParseText text={parsedText} />}
+        {!!parsedText && (
+          <ParseText
+            text={parsedText}
+            onChange={(text) => setInputText(text)}
+          />
+        )}
       </div>
     </div>
   );
