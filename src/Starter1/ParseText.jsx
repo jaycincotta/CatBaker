@@ -116,13 +116,16 @@ const ParseText = ({ text }) => {
       }),
     );
 
-    if (dataProvider && dataProvider.onDidChangeTreeDataEmitter) {
-      console.log("onDidChangeTreeDataEmitter");
-      dataProvider.onDidChangeTreeDataEmitter.emit(["root"]);
-    } else {
-      console.log("setDataProvider", generatedData);
-      setDataProvider(newDataProvider);
-    }
+    setDataProvider(newDataProvider);
+
+    // if (dataProvider && dataProvider.onDidChangeTreeDataEmitter) {
+    //   console.log("onDidChangeTreeDataEmitter");
+    //   dataProvider.items = generatedData;
+    //   dataProvider.onDidChangeTreeDataEmitter.emit(["root"]);
+    // } else {
+    //   console.log("setDataProvider", generatedData);
+    //   setDataProvider(newDataProvider);
+    // }
   }, [text]);
 
   if (!dataProvider) {
@@ -131,6 +134,10 @@ const ParseText = ({ text }) => {
 
   return (
     <UncontrolledTreeEnvironment
+      key={text}
+      canDragAndDrop={true}
+      canDropOnFolder={true}
+      canReorderItems={true}
       dataProvider={dataProvider}
       getItemTitle={(item) => item.data.caption}
       viewState={{
