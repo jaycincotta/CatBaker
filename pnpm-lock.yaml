@@ -8,6 +8,9 @@ dependencies:
   react:
     specifier: 18.2.0
     version: 18.2.0
+  react-complex-tree:
+    specifier: ^2.1.2
+    version: 2.4.4(react@18.2.0)
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
@@ -4448,6 +4451,14 @@ packages:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
     dev: true
+
+  /react-complex-tree@2.4.4(react@18.2.0):
+    resolution: {integrity: sha512-Nltzn7oJMF9NnPxrfxRxVD/4u/ZkCVEnwQ4Em6hmZT+m/DUCorIoPsL3VV86zZXx0D2Rj6LX8dHWnYFrMmYYlw==}
+    peerDependencies:
+      react: '>=16.0.0'
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}

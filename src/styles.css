@@ -1,4 +1,23 @@
+html {
+  background-color: #fffbf5;
+}
+
 .App {
   font-family: sans-serif;
+  text-align: left;
+}
+
+.App-header {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 8px;
+}
+
+.App-title {
+  margin: auto auto;
   text-align: center;
+  font-family: Cambria, Georgia, "Times New Roman", Times, serif;
+  font-style: italic;
+  font-weight: 100;
+  font-size: 2rem;
 }

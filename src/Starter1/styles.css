@@ -1,0 +1,61 @@
+.container {
+  display: flex;
+}
+
+.input-section {
+  margin-right: 20px;
+}
+
+textarea {
+  width: 40vw;
+  height: 200px;
+  margin-bottom: 4px;
+  margin-left: 8px;
+  height: calc(100vh - 160px);
+  padding-inline: 8px;
+}
+
+.output-section {
+  margin: 0 8px 0 0;
+  padding: 4px 8px;
+  width: 55vw;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: calc(100vh - 170px);
+  max-height: calc(100vh - 170px);
+  overflow-y: auto;
+}
+
+.error-message {
+  font-size: 1.5rem;
+  background-color: red;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+code,
+textarea {
+  font-size: 1rem;
+}
+
+.tree-container {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.react-complex-tree-container {
+  font-family: Arial, sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.react-complex-tree-node {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.react-complex-tree-node .title {
+  font-weight: bold;
+}
