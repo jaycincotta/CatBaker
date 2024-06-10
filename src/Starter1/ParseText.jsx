@@ -65,8 +65,12 @@ const buildTreeData = (lines) => {
     const parsedLine = parse(line);
     const newItem = {
       index: `item-${index}`,
-      data: { caption: parsedLine.caption, dataId: parsedLine.dataId },
-      isFolder: false,
+      data: {
+        generalCaption: parsedLine.caption,
+        caption: parsedLine.caption,
+        dataId: parsedLine.dataId,
+      },
+      isFolder: true,
       children: [],
     };
 
@@ -77,6 +81,9 @@ const buildTreeData = (lines) => {
     const currentParent = parentsStack[parentsStack.length - 1];
     currentParent.children.push(newItem.index);
     currentParent.isFolder = true;
+    if (currentParent.data)
+      currentParent.data.caption = `${currentParent.data.generalCaption} (${currentParent.children.length})`;
+    console.log(currentParent);
     items[newItem.index] = newItem;
 
     if (parsedLine.depth >= parentsStack.length) {
@@ -116,17 +123,11 @@ const ParseText = ({ text }) => {
       }),
     );
 
+    newDataProvider.onDidChangeTreeData(handleDragChanges);
     setDataProvider(newDataProvider);
-
-    // if (dataProvider && dataProvider.onDidChangeTreeDataEmitter) {
-    //   console.log("onDidChangeTreeDataEmitter");
-    //   dataProvider.items = generatedData;
-    //   dataProvider.onDidChangeTreeDataEmitter.emit(["root"]);
-    // } else {
-    //   console.log("setDataProvider", generatedData);
-    //   setDataProvider(newDataProvider);
-    // }
   }, [text]);
+
+  function handleDragChanges(changedItemIds) {}
 
   if (!dataProvider) {
     return <div>Loading...</div>;
