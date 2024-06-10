@@ -66,7 +66,6 @@ const buildTreeData = (lines) => {
     const newItem = {
       index: `item-${index}`,
       data: {
-        generalCaption: parsedLine.caption,
         caption: parsedLine.caption,
         dataId: parsedLine.dataId,
       },
@@ -81,9 +80,9 @@ const buildTreeData = (lines) => {
     const currentParent = parentsStack[parentsStack.length - 1];
     currentParent.children.push(newItem.index);
     currentParent.isFolder = true;
-    if (currentParent.data)
-      currentParent.data.caption = `${currentParent.data.generalCaption} (${currentParent.children.length})`;
-    console.log(currentParent);
+
+    newItem.parentIndex = currentParent.index;
+
     items[newItem.index] = newItem;
 
     if (parsedLine.depth >= parentsStack.length) {
@@ -96,7 +95,7 @@ const buildTreeData = (lines) => {
   return items;
 };
 
-const ParseText = ({ text }) => {
+const ParseText = ({ text, onChange }) => {
   const [generatedItems, setGeneratedItems] = useState(null);
   const [dataProvider, setDataProvider] = useState(null);
 
@@ -117,17 +116,60 @@ const ParseText = ({ text }) => {
 
     const newDataProvider = new StaticTreeDataProvider(
       generatedData,
-      (item, newTitle) => ({
-        ...item,
-        data: { ...item.data, caption: newTitle },
-      }),
+      handleRenamingEvent,
     );
 
-    newDataProvider.onDidChangeTreeData(handleDragChanges);
     setDataProvider(newDataProvider);
   }, [text]);
 
-  function handleDragChanges(changedItemIds) {}
+  function handleRenamingEvent(item, newTitle) {
+    return {
+      ...item,
+      data: {
+        ...item.data,
+        caption: newTitle,
+      },
+    };
+  }
+
+  function onItemDrop(source, destination) {
+    source.parentIndex = destination.index;
+
+    let text = "";
+    const itemsArray = Object.entries(dataProvider.data.items).map(
+      (keyValuePair) => keyValuePair[1],
+    );
+
+    console.log(itemsArray);
+
+    itemsArray.forEach((item) => {
+      const depth = getItemDepth(item, itemsArray);
+      if (item.index == "root") return;
+
+      if (depth == 0) text += item.data.caption;
+      else text += `${"-".repeat(depth)}${item.data.caption}\n`;
+    });
+
+    // for (const key in dataProvider.data.items) {
+    //   const item = dataProvider.data.items[key];
+    //   const depth = getItemDepth(item, itemsArray);
+    //   if (depth == 0) text += item.data.caption;
+    //   else text += `${"-".repeat(depth)}${item.data.caption}\n`;
+    // }
+
+    onChange(text);
+  }
+
+  function getItemDepth(item, itemsArray) {
+    if (!item.parentIndex || (item.parentIndex && item.parentIndex === "root"))
+      return 0;
+    const parent = itemsArray.find((c) => c.index === item.parentIndex);
+    return getItemDepth(parent) + 1;
+  }
+
+  function onItemRename() {
+    // TODO
+  }
 
   if (!dataProvider) {
     return <div>Loading...</div>;
@@ -139,6 +181,8 @@ const ParseText = ({ text }) => {
       canDragAndDrop={true}
       canDropOnFolder={true}
       canReorderItems={true}
+      onDrop={onItemDrop}
+      onRenameItem={onItemRename}
       dataProvider={dataProvider}
       getItemTitle={(item) => item.data.caption}
       viewState={{
