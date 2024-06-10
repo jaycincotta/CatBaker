@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   UncontrolledTreeEnvironment,
   Tree,
@@ -65,9 +65,14 @@ const buildTreeData = (lines) => {
     const parsedLine = parse(line);
     const newItem = {
       index: `item-${index}`,
-      data: { caption: parsedLine.caption, dataId: parsedLine.dataId },
-      isFolder: false,
+      id: parsedLine.caption,
+      data: {
+        caption: parsedLine.caption,
+        dataId: parsedLine.dataId,
+      },
+      isFolder: true,
       children: [],
+      parentId: null, // Initialize parentId to null
     };
 
     while (parentsStack.length > parsedLine.depth + 1) {
@@ -77,6 +82,8 @@ const buildTreeData = (lines) => {
     const currentParent = parentsStack[parentsStack.length - 1];
     currentParent.children.push(newItem.index);
     currentParent.isFolder = true;
+
+    newItem.parentId = currentParent.index; // Set parentId correctly
     items[newItem.index] = newItem;
 
     if (parsedLine.depth >= parentsStack.length) {
@@ -86,12 +93,15 @@ const buildTreeData = (lines) => {
     }
   });
 
+  console.log("items", items);
   return items;
 };
 
-const ParseText = ({ text }) => {
+const ParseText = ({ text, onChange }) => {
   const [generatedItems, setGeneratedItems] = useState(null);
   const [dataProvider, setDataProvider] = useState(null);
+  const treeRef = useRef();
+  const environmentRef = useRef();
 
   useEffect(() => {
     const lines = text
@@ -110,23 +120,35 @@ const ParseText = ({ text }) => {
 
     const newDataProvider = new StaticTreeDataProvider(
       generatedData,
-      (item, newTitle) => ({
-        ...item,
-        data: { ...item.data, caption: newTitle },
-      }),
+      handleRenamingEvent,
     );
 
     setDataProvider(newDataProvider);
-
-    // if (dataProvider && dataProvider.onDidChangeTreeDataEmitter) {
-    //   console.log("onDidChangeTreeDataEmitter");
-    //   dataProvider.items = generatedData;
-    //   dataProvider.onDidChangeTreeDataEmitter.emit(["root"]);
-    // } else {
-    //   console.log("setDataProvider", generatedData);
-    //   setDataProvider(newDataProvider);
-    // }
   }, [text]);
+
+  function handleRenamingEvent(item, newTitle) {
+    return {
+      ...item,
+      data: {
+        ...item.data,
+        caption: newTitle,
+      },
+    };
+  }
+
+  function onItemChanged() {
+    let text = "";
+
+    console.log("environment", environmentRef.current);
+    environmentRef.current.linearItems.tree.forEach((treeNode) => {
+      const current = dataProvider.data.items[treeNode.item];
+      text += `${"-".repeat(treeNode.depth)}${current.data.caption}`;
+      if (current.data.dataId) text += `=${current.data.dataId}`;
+      text += "\n";
+    });
+
+    onChange(text);
+  }
 
   if (!dataProvider) {
     return <div>Loading...</div>;
@@ -135,9 +157,12 @@ const ParseText = ({ text }) => {
   return (
     <UncontrolledTreeEnvironment
       key={text}
+      ref={environmentRef}
       canDragAndDrop={true}
       canDropOnFolder={true}
       canReorderItems={true}
+      onDrop={onItemChanged}
+      onRenameItem={onItemChanged}
       dataProvider={dataProvider}
       getItemTitle={(item) => item.data.caption}
       viewState={{
@@ -146,7 +171,12 @@ const ParseText = ({ text }) => {
         },
       }}
     >
-      <Tree treeId="tree" rootItem="root" treeLabel="Categories" />
+      <Tree
+        ref={treeRef}
+        treeId="tree"
+        rootItem="root"
+        treeLabel="Categories"
+      />
     </UncontrolledTreeEnvironment>
   );
 };

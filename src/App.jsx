@@ -1,10 +1,8 @@
 import "./styles.css";
 import CatBaker from "./assets/CatBaker.png";
 import Tester from "./Starter1/Tester";
-//import SimpleTree from "./SimpleTree2";
-//import MyComponent from "./MyComponent";
+
 export default function App() {
-  console.log("Text", Text);
   return (
     <div className="App">
       <div className="App-header">
@@ -18,8 +16,6 @@ export default function App() {
         </div>
       </div>
       <Tester />
-      {/* <SimpleTree /> */}
-      {/* <MyComponent /> */}
     </div>
   );
 }

@@ -42,7 +42,12 @@ const Tester = () => {
         <button onClick={handleParseClick}>Parse</button> */}
       </div>
       <div className="output-section">
-        {!!parsedText && <ParseText text={parsedText} />}
+        {!!parsedText && (
+          <ParseText
+            text={parsedText}
+            onChange={(text) => setInputText(text)}
+          />
+        )}
       </div>
     </div>
   );
