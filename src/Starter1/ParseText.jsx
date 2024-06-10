@@ -71,6 +71,7 @@ const buildTreeData = (lines) => {
       },
       isFolder: true,
       children: [],
+      parentId: null, // Initialize parentId to null
     };
 
     while (parentsStack.length > parsedLine.depth + 1) {
@@ -81,8 +82,7 @@ const buildTreeData = (lines) => {
     currentParent.children.push(newItem.index);
     currentParent.isFolder = true;
 
-    newItem.parentIndex = currentParent.index;
-
+    newItem.parentId = currentParent.index; // Set parentId correctly
     items[newItem.index] = newItem;
 
     if (parsedLine.depth >= parentsStack.length) {
@@ -92,6 +92,7 @@ const buildTreeData = (lines) => {
     }
   });
 
+  console.log("items", items);
   return items;
 };
 
@@ -118,7 +119,6 @@ const ParseText = ({ text, onChange }) => {
       generatedData,
       handleRenamingEvent,
     );
-
     setDataProvider(newDataProvider);
   }, [text]);
 
