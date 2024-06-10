@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
   UncontrolledTreeEnvironment,
   Tree,
@@ -65,6 +65,7 @@ const buildTreeData = (lines) => {
     const parsedLine = parse(line);
     const newItem = {
       index: `item-${index}`,
+      id: parsedLine.caption,
       data: {
         caption: parsedLine.caption,
         dataId: parsedLine.dataId,
@@ -99,6 +100,8 @@ const buildTreeData = (lines) => {
 const ParseText = ({ text, onChange }) => {
   const [generatedItems, setGeneratedItems] = useState(null);
   const [dataProvider, setDataProvider] = useState(null);
+  const treeRef = useRef();
+  const environmentRef = useRef();
 
   useEffect(() => {
     const lines = text
@@ -119,6 +122,7 @@ const ParseText = ({ text, onChange }) => {
       generatedData,
       handleRenamingEvent,
     );
+
     setDataProvider(newDataProvider);
   }, [text]);
 
@@ -132,43 +136,17 @@ const ParseText = ({ text, onChange }) => {
     };
   }
 
-  function onItemDrop(source, destination) {
-    source.parentIndex = destination.index;
-
+  function onItemChanged() {
     let text = "";
-    const itemsArray = Object.entries(dataProvider.data.items).map(
-      (keyValuePair) => keyValuePair[1],
-    );
 
-    console.log(itemsArray);
-
-    itemsArray.forEach((item) => {
-      const depth = getItemDepth(item, itemsArray);
-      if (item.index == "root") return;
-
-      if (depth == 0) text += item.data.caption;
-      else text += `${"-".repeat(depth)}${item.data.caption}\n`;
+    environmentRef.current.linearItems.tree.forEach((treeNode) => {
+      const current = dataProvider.data.items[treeNode.item];
+      text += `${"-".repeat(treeNode.depth)}${current.data.caption}`;
+      if (current.data.dataId) text += `=${current.data.dataId}`;
+      text += "\n";
     });
 
-    // for (const key in dataProvider.data.items) {
-    //   const item = dataProvider.data.items[key];
-    //   const depth = getItemDepth(item, itemsArray);
-    //   if (depth == 0) text += item.data.caption;
-    //   else text += `${"-".repeat(depth)}${item.data.caption}\n`;
-    // }
-
     onChange(text);
-  }
-
-  function getItemDepth(item, itemsArray) {
-    if (!item.parentIndex || (item.parentIndex && item.parentIndex === "root"))
-      return 0;
-    const parent = itemsArray.find((c) => c.index === item.parentIndex);
-    return getItemDepth(parent) + 1;
-  }
-
-  function onItemRename() {
-    // TODO
   }
 
   if (!dataProvider) {
@@ -178,11 +156,12 @@ const ParseText = ({ text, onChange }) => {
   return (
     <UncontrolledTreeEnvironment
       key={text}
+      ref={environmentRef}
       canDragAndDrop={true}
       canDropOnFolder={true}
       canReorderItems={true}
-      onDrop={onItemDrop}
-      onRenameItem={onItemRename}
+      onDrop={onItemChanged}
+      onRenameItem={onItemChanged}
       dataProvider={dataProvider}
       getItemTitle={(item) => item.data.caption}
       viewState={{
@@ -191,7 +170,12 @@ const ParseText = ({ text, onChange }) => {
         },
       }}
     >
-      <Tree treeId="tree" rootItem="root" treeLabel="Categories" />
+      <Tree
+        ref={treeRef}
+        treeId="tree"
+        rootItem="root"
+        treeLabel="Categories"
+      />
     </UncontrolledTreeEnvironment>
   );
 };
