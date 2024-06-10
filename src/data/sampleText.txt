@@ -1,8 +1,5 @@
-Fruit
--Apples
--Oranges
 Latches & Handles
--Latches 5
+-Latches
 --Standard Latches
 --Walk-in Latches
 ---Safety Latches

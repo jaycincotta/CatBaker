@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   UncontrolledTreeEnvironment,
   Tree,
@@ -139,6 +139,7 @@ const ParseText = ({ text, onChange }) => {
   function onItemChanged() {
     let text = "";
 
+    console.log("environment", environmentRef.current);
     environmentRef.current.linearItems.tree.forEach((treeNode) => {
       const current = dataProvider.data.items[treeNode.item];
       text += `${"-".repeat(treeNode.depth)}${current.data.caption}`;
