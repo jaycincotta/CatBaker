@@ -1,6 +1,3 @@
-Fruit
--Apples
--Oranges
 Latches & Handles
 -Latches 5
 --Standard Latches
