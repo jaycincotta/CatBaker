@@ -171,8 +171,6 @@ const ParseText = ({ text, onChange }) => {
     environmentRef.current.expandAll("tree");
   }
 
-  console.log(collapsedCount);
-
   if (!dataProvider) {
     return <div>Loading...</div>;
   }
