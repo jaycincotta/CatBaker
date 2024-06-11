@@ -1,6 +1,7 @@
 import "./styles.css";
 import CatBaker from "./assets/CatBaker.png";
 import Tester from "./Starter1/Tester";
+import AppLock from "./AppLock";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <div className="App-title">
           We're cooking up the successor to CatMaker!
         </div>
+        <AppLock />
       </div>
       <Tester />
     </div>

@@ -21,3 +21,21 @@ html {
   font-weight: 100;
   font-size: 2rem;
 }
+
+.App-lock {
+  float: right;
+  font-size: 2rem;
+  margin-top: 1rem;
+  margin-right: 8px;
+  cursor: pointer;
+}
+.App-lock {
+}
+
+.App-lock.locked {
+  color: red; /* Example color for locked state */
+}
+
+.App-lock.unlocked {
+  color: green; /* Example color for unlocked state */
+}
