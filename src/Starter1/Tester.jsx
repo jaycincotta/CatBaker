@@ -4,7 +4,7 @@ import useLoadTextFile from "../useLoadTextFile";
 import "./styles.css";
 
 const Tester = () => {
-  const defaultText = useLoadTextFile("/src/data/simpleText.txt");
+  const defaultText = useLoadTextFile("/src/assets/sampleText.txt");
   const [inputText, setInputText] = useState("");
   const [parsedText, setParsedText] = useState("");
 
