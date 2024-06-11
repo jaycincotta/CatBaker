@@ -2,11 +2,6 @@
   display: flex;
 }
 
-.container button {
-  padding: 8px;
-  height: fit-content;
-}
-
 .input-section {
   margin-right: 20px;
 }
@@ -63,4 +58,23 @@ textarea {
 
 .react-complex-tree-node .title {
   font-weight: bold;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.toolbar-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.toolbar-top > * {
+  margin-bottom: 16px;
 }

@@ -1,31 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ParseText from "./ParseText";
 import useLoadTextFile from "../useLoadTextFile";
 import "./styles.css";
+import AppContext from "../Context/AppContext";
 
 const Tester = () => {
+  const { setTreeText, version } = useContext(AppContext);
   const defaultText = useLoadTextFile("/sampleText.txt");
-  const [inputText, setInputText] = useState("");
-  const [parsedText, setParsedText] = useState("");
+  const [inputText, setInputText] = useState(
+    version ? version.TreeData : defaultText,
+  );
 
   useEffect(() => {
-    if (defaultText) {
+    if (version) {
+      setInputText(version.TreeData);
+      setTreeText(version.TreeData);
+    } else {
       setInputText(defaultText);
-      setParsedText(defaultText);
+      setTreeText(defaultText);
     }
-  }, [defaultText]);
+  }, [defaultText, version]);
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
-    setParsedText(e.target.value);
+    setTreeText(e.target.value);
   };
 
-  const handleParseClick = () => {
-    setParsedText(inputText);
-  };
-
-  const handleBlur = () => {
-    handleParseClick();
+  const handleTreeChange = (text) => {
+    setInputText(text);
+    setTreeText(text);
   };
 
   return (
@@ -34,15 +37,12 @@ const Tester = () => {
         <textarea
           value={inputText}
           onChange={handleInputChange}
-          onBlur={handleBlur}
           placeholder="Enter text here"
           style={{ resize: "none" }} // Disable resizing
         />
-        {/* <br />
-        <button onClick={handleParseClick}>Parse</button> */}
       </div>
-      {!!parsedText && (
-        <ParseText text={parsedText} onChange={(text) => setInputText(text)} />
+      {!!inputText && (
+        <ParseText text={inputText} onChange={handleTreeChange} />
       )}
     </div>
   );

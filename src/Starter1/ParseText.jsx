@@ -6,6 +6,8 @@ import {
 } from "react-complex-tree";
 import "react-complex-tree/lib/style-modern.css";
 import AppLock from "../AppLock";
+import SelectUser from "../Login/SelectUser";
+import Save from "../Save";
 
 const parse = (line) => {
   let depth = 0;
@@ -156,6 +158,7 @@ const ParseText = ({ text, onChange }) => {
   }
 
   function onExpandItem(item) {
+    if (item.children.length === 0) return;
     setCollapsedCount((count) => {
       if (count <= 0) return 0;
       return count - 1;
@@ -163,6 +166,7 @@ const ParseText = ({ text, onChange }) => {
   }
 
   function onCollapseItem(item) {
+    if (item.children.length === 0) return;
     setCollapsedCount((count) => count + 1);
   }
 
@@ -204,7 +208,16 @@ const ParseText = ({ text, onChange }) => {
           />
         </UncontrolledTreeEnvironment>
       </div>
-      <AppLock isLocked={collapsedCount > 0} onClick={onUnlockDragAndDrop} />
+      <div className="toolbar">
+        <div className="toolbar-top">
+          <AppLock
+            isLocked={collapsedCount > 0}
+            onClick={onUnlockDragAndDrop}
+          />
+          <Save />
+        </div>
+        <SelectUser />
+      </div>
     </React.Fragment>
   );
 };
