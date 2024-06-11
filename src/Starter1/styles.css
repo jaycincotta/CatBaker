@@ -26,13 +26,25 @@ textarea {
   overflow-y: auto;
 }
 
-.error-message {
-  font-size: 1.5rem;
-  background-color: red;
-  color: white;
+.error {
+  font-size: 1rem;
+  border-radius: 4px;
+  background-color: rgba(240, 214, 214, 0.616);
+  border: 1px solid #ccc;
   text-align: center;
   padding: 1rem;
   margin-bottom: 0.5rem;
+  width: 55vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.error i {
+  font-size: 1.5rem;
+  color: orange;
+  margin-right: 16px;
 }
 
 code,

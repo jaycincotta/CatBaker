@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import ParseText from "./ParseText";
 import useLoadTextFile from "../useLoadTextFile";
-import "./styles.css";
 import AppContext from "../Context/AppContext";
+import TreeEditor from "./TreeEditor";
+import "./styles.css";
 
-const Tester = () => {
+export default function CategoryBuilder() {
   const { setTreeText, version } = useContext(AppContext);
   const defaultText = useLoadTextFile("/sampleText.txt");
   const [inputText, setInputText] = useState(
@@ -22,11 +22,13 @@ const Tester = () => {
   }, [defaultText, version]);
 
   const handleInputChange = (e) => {
+    console.log("Input Changed");
     setInputText(e.target.value);
     setTreeText(e.target.value);
   };
 
   const handleTreeChange = (text) => {
+    console.log("Tree Changed");
     setInputText(text);
     setTreeText(text);
   };
@@ -43,10 +45,8 @@ const Tester = () => {
         />
       </div>
       {!!inputText && (
-        <ParseText text={inputText} onChange={handleTreeChange} />
+        <TreeEditor text={inputText} onChange={handleTreeChange} />
       )}
     </div>
   );
-};
-
-export default Tester;
+}
