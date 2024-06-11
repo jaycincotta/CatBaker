@@ -5,6 +5,7 @@ import {
   StaticTreeDataProvider,
 } from "react-complex-tree";
 import "react-complex-tree/lib/style-modern.css";
+import AppLock from "../AppLock";
 
 const parse = (line) => {
   let depth = 0;
@@ -93,13 +94,13 @@ const buildTreeData = (lines) => {
     }
   });
 
-  console.log("items", items);
   return items;
 };
 
 const ParseText = ({ text, onChange }) => {
   const [generatedItems, setGeneratedItems] = useState(null);
   const [dataProvider, setDataProvider] = useState(null);
+  const [collapsedCount, setCollapsedCount] = useState(0);
   const treeRef = useRef();
   const environmentRef = useRef();
 
@@ -139,15 +140,35 @@ const ParseText = ({ text, onChange }) => {
   function onItemChanged() {
     let text = "";
 
-    console.log("environment", environmentRef.current);
+    console.log(environmentRef.current);
+    // console.log(
+    //   environmentRef.current.linearItems.tree.map((treeNode) => treeNode.item),
+    // );
+
     environmentRef.current.linearItems.tree.forEach((treeNode) => {
-      const current = dataProvider.data.items[treeNode.item];
-      text += `${"-".repeat(treeNode.depth)}${current.data.caption}`;
-      if (current.data.dataId) text += `=${current.data.dataId}`;
+      const currentNode = dataProvider.data.items[treeNode.item];
+      text += `${"-".repeat(treeNode.depth)}${currentNode.data.caption}`;
+      if (currentNode.data.dataId) text += `=${currentNode.data.dataId}`;
       text += "\n";
     });
 
     onChange(text);
+  }
+
+  function onExpandItem(item) {
+    setCollapsedCount((count) => {
+      if (count <= 0) return 0;
+      return count - 1;
+    });
+  }
+
+  function onCollapseItem(item) {
+    setCollapsedCount((count) => count + 1);
+  }
+
+  function onUnlockDragAndDrop() {
+    setCollapsedCount(0);
+    environmentRef.current.expandAll("tree");
   }
 
   if (!dataProvider) {
@@ -155,29 +176,36 @@ const ParseText = ({ text, onChange }) => {
   }
 
   return (
-    <UncontrolledTreeEnvironment
-      key={text}
-      ref={environmentRef}
-      canDragAndDrop={true}
-      canDropOnFolder={true}
-      canReorderItems={true}
-      onDrop={onItemChanged}
-      onRenameItem={onItemChanged}
-      dataProvider={dataProvider}
-      getItemTitle={(item) => item.data.caption}
-      viewState={{
-        tree: {
-          expandedItems: Object.keys(generatedItems || sampleItems),
-        },
-      }}
-    >
-      <Tree
-        ref={treeRef}
-        treeId="tree"
-        rootItem="root"
-        treeLabel="Categories"
-      />
-    </UncontrolledTreeEnvironment>
+    <React.Fragment>
+      <div className="output-section">
+        <UncontrolledTreeEnvironment
+          key={text}
+          ref={environmentRef}
+          canDragAndDrop={collapsedCount === 0}
+          canDropOnFolder={true}
+          canReorderItems={true}
+          onDrop={onItemChanged}
+          onRenameItem={onItemChanged}
+          onCollapseItem={onCollapseItem}
+          onExpandItem={onExpandItem}
+          dataProvider={dataProvider}
+          getItemTitle={(item) => item.data.caption}
+          viewState={{
+            tree: {
+              expandedItems: Object.keys(generatedItems || sampleItems),
+            },
+          }}
+        >
+          <Tree
+            ref={treeRef}
+            treeId="tree"
+            rootItem="root"
+            treeLabel="Categories"
+          />
+        </UncontrolledTreeEnvironment>
+      </div>
+      <AppLock isLocked={collapsedCount > 0} onClick={onUnlockDragAndDrop} />
+    </React.Fragment>
   );
 };
 
