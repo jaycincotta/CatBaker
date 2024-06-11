@@ -2,6 +2,11 @@
   display: flex;
 }
 
+.container button {
+  padding: 8px;
+  height: fit-content;
+}
+
 .input-section {
   margin-right: 20px;
 }

@@ -178,31 +178,36 @@ const ParseText = ({ text, onChange }) => {
   }
 
   return (
-    <UncontrolledTreeEnvironment
-      key={text}
-      ref={environmentRef}
-      canDragAndDrop={collapsedItems.length === 0}
-      canDropOnFolder={true}
-      canReorderItems={true}
-      onDrop={onItemChanged}
-      onRenameItem={onItemChanged}
-      onCollapseItem={onCollapseItem}
-      onExpandItem={onExpandItem}
-      dataProvider={dataProvider}
-      getItemTitle={(item) => item.data.caption}
-      viewState={{
-        tree: {
-          expandedItems: Object.keys(generatedItems || sampleItems),
-        },
-      }}
-    >
-      <Tree
-        ref={treeRef}
-        treeId="tree"
-        rootItem="root"
-        treeLabel="Categories"
-      />
-    </UncontrolledTreeEnvironment>
+    <React.Fragment>
+      <div className="output-section">
+        <UncontrolledTreeEnvironment
+          key={text}
+          ref={environmentRef}
+          canDragAndDrop={collapsedItems.length === 0}
+          canDropOnFolder={true}
+          canReorderItems={true}
+          onDrop={onItemChanged}
+          onRenameItem={onItemChanged}
+          onCollapseItem={onCollapseItem}
+          onExpandItem={onExpandItem}
+          dataProvider={dataProvider}
+          getItemTitle={(item) => item.data.caption}
+          viewState={{
+            tree: {
+              expandedItems: Object.keys(generatedItems || sampleItems),
+            },
+          }}
+        >
+          <Tree
+            ref={treeRef}
+            treeId="tree"
+            rootItem="root"
+            treeLabel="Categories"
+          />
+        </UncontrolledTreeEnvironment>
+      </div>
+      <button onClick={onUnlockDragAndDrop}>Unlock drag and drop</button>
+    </React.Fragment>
   );
 };
 
