@@ -15,7 +15,6 @@ export default function App() {
         <div className="App-title">
           We're cooking up the successor to CatMaker!
         </div>
-        <AppLock />
       </div>
       <Tester />
     </div>
