@@ -1,23 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ParseText from "./ParseText";
 import useLoadTextFile from "../useLoadTextFile";
 import "./styles.css";
+import AppContext from "../Context/AppContext";
 
 const Tester = () => {
   const defaultText = useLoadTextFile("/sampleText.txt");
   const [inputText, setInputText] = useState("");
   const [parsedText, setParsedText] = useState("");
+  const { setTreeText } = useContext(AppContext);
 
   useEffect(() => {
     if (defaultText) {
       setInputText(defaultText);
       setParsedText(defaultText);
+      setTreeText(defaultText);
     }
   }, [defaultText]);
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
     setParsedText(e.target.value);
+    setTreeText(e.target.value);
   };
 
   const handleParseClick = () => {
