@@ -100,7 +100,7 @@ const buildTreeData = (lines) => {
 const ParseText = ({ text, onChange }) => {
   const [generatedItems, setGeneratedItems] = useState(null);
   const [dataProvider, setDataProvider] = useState(null);
-  const [isItemCollapsed, setIsItemCollapsed] = useState(false);
+  const [collapsedCount, setCollapsedCount] = useState(0);
   const treeRef = useRef();
   const environmentRef = useRef();
 
@@ -156,19 +156,22 @@ const ParseText = ({ text, onChange }) => {
   }
 
   function onExpandItem(item) {
-    setIsItemCollapsed(false);
+    setCollapsedCount((count) => {
+      if (count <= 0) return 0;
+      return count - 1;
+    });
   }
 
   function onCollapseItem(item) {
-    setIsItemCollapsed(true);
+    setCollapsedCount((count) => count + 1);
   }
 
   function onUnlockDragAndDrop() {
-    setIsItemCollapsed(false);
+    setCollapsedCount(0);
     environmentRef.current.expandAll("tree");
   }
 
-  console.log(isItemCollapsed);
+  console.log(collapsedCount);
 
   if (!dataProvider) {
     return <div>Loading...</div>;
@@ -180,7 +183,7 @@ const ParseText = ({ text, onChange }) => {
         <UncontrolledTreeEnvironment
           key={text}
           ref={environmentRef}
-          canDragAndDrop={!isItemCollapsed}
+          canDragAndDrop={collapsedCount === 0}
           canDropOnFolder={true}
           canReorderItems={true}
           onDrop={onItemChanged}
@@ -203,7 +206,7 @@ const ParseText = ({ text, onChange }) => {
           />
         </UncontrolledTreeEnvironment>
       </div>
-      <AppLock isLocked={isItemCollapsed} onClick={onUnlockDragAndDrop} />
+      <AppLock isLocked={collapsedCount > 0} onClick={onUnlockDragAndDrop} />
     </React.Fragment>
   );
 };
