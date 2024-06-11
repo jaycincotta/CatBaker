@@ -5,6 +5,7 @@ import {
   StaticTreeDataProvider,
 } from "react-complex-tree";
 import "react-complex-tree/lib/style-modern.css";
+import AppLock from "../AppLock";
 
 const parse = (line) => {
   let depth = 0;
@@ -99,7 +100,7 @@ const buildTreeData = (lines) => {
 const ParseText = ({ text, onChange }) => {
   const [generatedItems, setGeneratedItems] = useState(null);
   const [dataProvider, setDataProvider] = useState(null);
-  const [collapsedItems, setCollapsedItems] = useState([]);
+  const [isItemCollapsed, setIsItemCollapsed] = useState(false);
   const treeRef = useRef();
   const environmentRef = useRef();
 
@@ -155,23 +156,19 @@ const ParseText = ({ text, onChange }) => {
   }
 
   function onExpandItem(item) {
-    const filteredItems = collapsedItems.filter(
-      (collapsedItem) => collapsedItem !== item.index,
-    );
-    setCollapsedItems(filteredItems);
+    setIsItemCollapsed(false);
   }
 
   function onCollapseItem(item) {
-    setCollapsedItems((collapsed) => {
-      const newArray = [...collapsed, item.index];
-      return newArray;
-    });
+    setIsItemCollapsed(true);
   }
 
   function onUnlockDragAndDrop() {
-    environmentRef.current.expandAll();
-    environmentRef.current.canDragAndDrop = true;
+    setIsItemCollapsed(false);
+    environmentRef.current.expandAll("tree");
   }
+
+  console.log(isItemCollapsed);
 
   if (!dataProvider) {
     return <div>Loading...</div>;
@@ -183,7 +180,7 @@ const ParseText = ({ text, onChange }) => {
         <UncontrolledTreeEnvironment
           key={text}
           ref={environmentRef}
-          canDragAndDrop={collapsedItems.length === 0}
+          canDragAndDrop={!isItemCollapsed}
           canDropOnFolder={true}
           canReorderItems={true}
           onDrop={onItemChanged}
@@ -206,7 +203,7 @@ const ParseText = ({ text, onChange }) => {
           />
         </UncontrolledTreeEnvironment>
       </div>
-      <button onClick={onUnlockDragAndDrop}>Unlock drag and drop</button>
+      <AppLock isLocked={isItemCollapsed} onClick={onUnlockDragAndDrop} />
     </React.Fragment>
   );
 };
