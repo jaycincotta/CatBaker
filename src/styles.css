@@ -33,9 +33,9 @@ html {
 }
 
 .App-lock.locked {
-  color: red; /* Example color for locked state */
+  color: darkred;
 }
 
 .App-lock.unlocked {
-  color: green; /* Example color for unlocked state */
+  color: green;
 }
