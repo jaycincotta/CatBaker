@@ -156,6 +156,7 @@ const ParseText = ({ text, onChange }) => {
   }
 
   function onExpandItem(item) {
+    if (item.children.length === 0) return;
     setCollapsedCount((count) => {
       if (count <= 0) return 0;
       return count - 1;
@@ -163,6 +164,7 @@ const ParseText = ({ text, onChange }) => {
   }
 
   function onCollapseItem(item) {
+    if (item.children.length === 0) return;
     setCollapsedCount((count) => count + 1);
   }
 
