@@ -37,6 +37,7 @@ const Tester = () => {
         <textarea
           value={inputText}
           onChange={handleInputChange}
+          onPaste={handleInputChange}
           placeholder="Enter text here"
           style={{ resize: "none" }} // Disable resizing
         />

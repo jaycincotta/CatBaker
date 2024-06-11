@@ -35,6 +35,9 @@ export default function SelectUser() {
             </li>
           ))}
         </ul>
+        <div className="App-title">
+          We're cooking up the successor to CatMaker!
+        </div>
       </dialog>
     </div>
   );

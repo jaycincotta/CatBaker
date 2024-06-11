@@ -20,7 +20,8 @@ html {
   font-family: Cambria, Georgia, "Times New Roman", Times, serif;
   font-style: italic;
   font-weight: 100;
-  font-size: 2rem;
+  font-size: 1.6rem;
+  margin-top: 24px;
 }
 
 .App-lock {
