@@ -1,14 +1,7 @@
 .select-user > i {
   font-size: 2rem;
   margin-bottom: 8px;
-}
-
-.login-modal {
-  border: none;
-  padding: 16px;
-  box-sizing: border-box;
-  border-radius: 10px;
-  max-width: 700px;
+  color: #1c357b;
 }
 
 .login-modal h1 {

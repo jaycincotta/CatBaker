@@ -25,10 +25,7 @@ export default function SelectUser() {
 
   return (
     <div className="select-user">
-      <i
-        onClick={handleLogout}
-        className="fa-solid fa-arrow-left-to-bracket"
-      ></i>
+      <i onClick={handleLogout} className="fa-solid fa-person-to-door"></i>
       <dialog ref={dialogRef} className="login-modal">
         <h1>Login</h1>
         <ul className="users">

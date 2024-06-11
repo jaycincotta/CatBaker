@@ -7,6 +7,7 @@ import {
 import "react-complex-tree/lib/style-modern.css";
 import AppLock from "../AppLock";
 import SelectUser from "../Login/SelectUser";
+import Save from "../Save";
 
 const parse = (line) => {
   let depth = 0;
@@ -208,7 +209,13 @@ const ParseText = ({ text, onChange }) => {
         </UncontrolledTreeEnvironment>
       </div>
       <div className="toolbar">
-        <AppLock isLocked={collapsedCount > 0} onClick={onUnlockDragAndDrop} />
+        <div className="toolbar-top">
+          <AppLock
+            isLocked={collapsedCount > 0}
+            onClick={onUnlockDragAndDrop}
+          />
+          <Save />
+        </div>
         <SelectUser />
       </div>
     </React.Fragment>

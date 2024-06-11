@@ -3,6 +3,7 @@ import CatBaker from "./assets/CatBaker.png";
 import Tester from "./Starter1/Tester";
 import UserProfile from "./Login/UserProfile";
 import AppProvider from "./Context/AppProvider";
+import Navigation from "./Navigation";
 
 export default function App() {
   return (
@@ -14,9 +15,11 @@ export default function App() {
             alt="Cat Baker"
             style={{ width: "128px", height: "128px" }}
           />
-          <div className="App-title">
+          {/* <div className="App-title">
             We're cooking up the successor to CatMaker!
-          </div>
+          </div> */}
+          <Navigation />
+
           <UserProfile />
         </div>
         <Tester />
