@@ -93,13 +93,13 @@ const buildTreeData = (lines) => {
     }
   });
 
-  console.log("items", items);
   return items;
 };
 
 const ParseText = ({ text, onChange }) => {
   const [generatedItems, setGeneratedItems] = useState(null);
   const [dataProvider, setDataProvider] = useState(null);
+  const [collapsedItems, setCollapsedItems] = useState([]);
   const treeRef = useRef();
   const environmentRef = useRef();
 
@@ -139,14 +139,38 @@ const ParseText = ({ text, onChange }) => {
   function onItemChanged() {
     let text = "";
 
+    console.log(environmentRef.current);
+    // console.log(
+    //   environmentRef.current.linearItems.tree.map((treeNode) => treeNode.item),
+    // );
+
     environmentRef.current.linearItems.tree.forEach((treeNode) => {
-      const current = dataProvider.data.items[treeNode.item];
-      text += `${"-".repeat(treeNode.depth)}${current.data.caption}`;
-      if (current.data.dataId) text += `=${current.data.dataId}`;
+      const currentNode = dataProvider.data.items[treeNode.item];
+      text += `${"-".repeat(treeNode.depth)}${currentNode.data.caption}`;
+      if (currentNode.data.dataId) text += `=${currentNode.data.dataId}`;
       text += "\n";
     });
 
     onChange(text);
+  }
+
+  function onExpandItem(item) {
+    const filteredItems = collapsedItems.filter(
+      (collapsedItem) => collapsedItem !== item.index,
+    );
+    setCollapsedItems(filteredItems);
+  }
+
+  function onCollapseItem(item) {
+    setCollapsedItems((collapsed) => {
+      const newArray = [...collapsed, item.index];
+      return newArray;
+    });
+  }
+
+  function onUnlockDragAndDrop() {
+    environmentRef.current.expandAll();
+    environmentRef.current.canDragAndDrop = true;
   }
 
   if (!dataProvider) {
@@ -157,11 +181,13 @@ const ParseText = ({ text, onChange }) => {
     <UncontrolledTreeEnvironment
       key={text}
       ref={environmentRef}
-      canDragAndDrop={true}
+      canDragAndDrop={collapsedItems.length === 0}
       canDropOnFolder={true}
       canReorderItems={true}
       onDrop={onItemChanged}
       onRenameItem={onItemChanged}
+      onCollapseItem={onCollapseItem}
+      onExpandItem={onExpandItem}
       dataProvider={dataProvider}
       getItemTitle={(item) => item.data.caption}
       viewState={{
