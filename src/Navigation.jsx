@@ -6,7 +6,7 @@ export default function Navigation() {
   const { fetchVersion, version, latestVersionId } = useContext(AppContext);
 
   return (
-    latestVersionId && (
+    latestVersionId > 0 && (
       <div className="navigation">
         <i
           onClick={() => fetchVersion(1)}
