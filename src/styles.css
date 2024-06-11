@@ -25,11 +25,7 @@ html {
 .App-lock {
   float: right;
   font-size: 2rem;
-  margin-top: 1rem;
-  margin-right: 8px;
   cursor: pointer;
-}
-.App-lock {
 }
 
 .App-lock.locked {
