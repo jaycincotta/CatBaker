@@ -5,6 +5,7 @@ import TreeEditor from "./TreeEditor";
 import "./styles.css";
 import { ControlledTreeEnvironment } from "react-complex-tree";
 import ControlledTreeEditor from "./ControlledTreeEditor";
+import StaticTree from "./Statictree";
 
 export default function CategoryBuilder() {
   const { setTreeText, version } = useContext(AppContext);
@@ -47,6 +48,7 @@ export default function CategoryBuilder() {
         />
       </div>
       {!!inputText && (
+        // <StaticTree text={inputText} onChange={handleTreeChange} />
         <ControlledTreeEditor text={inputText} onChange={handleTreeChange} />
       )}
     </div>

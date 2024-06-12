@@ -117,6 +117,32 @@ export default function ControlledTreeEditor({ text, onChange }) {
     });
   }
 
+  //
+  function onDrop(sourceArray, target) {
+    console.log(sourceArray);
+    console.log(target);
+
+    const source = sourceArray[0];
+    const tempItems = { ...items };
+    const tempArray = Object.values(tempItems);
+    const oldParent = tempArray.find((c) => {
+      if (!c.children) return false;
+      return c.children.find((i) => i === source.index);
+    });
+
+    // Remove item from old parent
+    oldParent.children = oldParent.children.filter((i) => i !== source.index);
+
+    // Add item to new parent in correct order using childIndex
+    const targetItem = target.targetItem ?? target.parentItem;
+    tempItems[targetItem].children.splice(target.childIndex, 0, source.index);
+
+    // Assign old parent with updated children
+    tempItems[oldParent.index] = oldParent;
+
+    setItems(tempItems);
+  }
+
   function onCollapseItem(item) {
     setExpandedItems(
       expandedItems.filter(
@@ -150,8 +176,21 @@ export default function ControlledTreeEditor({ text, onChange }) {
     return <div>Loading...</div>;
   }
 
+  console.log(items);
+
+  function reorderItems() {
+    const tempItems = { ...items };
+
+    var temp = tempItems["item-6"];
+    tempItems["item-6"] = tempItems["item-8"];
+    tempItems["item-8"] = temp;
+
+    setItems(tempItems);
+  }
+
   return (
     <React.Fragment>
+      <button onClick={reorderItems}>Reorder</button>
       <div className="output-section">
         <ControlledTreeEnvironment
           items={items}
@@ -164,7 +203,7 @@ export default function ControlledTreeEditor({ text, onChange }) {
           onExpandItem={onExpandItem}
           ref={environmentRef}
           getItemTitle={(item) => item.data.caption}
-          //   onDrop={onRenameItem}
+          onDrop={onDrop}
           onRenameItem={onRenameItem}
           viewState={{
             ["tree"]: {
@@ -177,16 +216,18 @@ export default function ControlledTreeEditor({ text, onChange }) {
           onSelectItems={(items) => setSelectedItems(items)}
           renderItemTitle={({ title }) => <p>{title}</p>}
           renderItemArrow={({ item, context }) => {
-            console.log(item);
+            // console.log(item);
             return item.children && item.children.length > 0 ? (
               <span {...context.arrowProps}>
                 {context.isExpanded ? (
-                  <i className="fa-solid fa-chevron-down tree-item-arrow"></i>
+                  <i className="fa-solid fa-folder-open tree-item-arrow"></i>
                 ) : (
-                  <i className="fa-solid fa-chevron-right tree-item-arrow"></i>
+                  <i className="fa-solid fa-folder tree-item-arrow"></i>
                 )}
               </span>
-            ) : null;
+            ) : (
+              <i class="fa-regular fa-file tree-item-arrow"></i>
+            );
           }}
           renderItem={({ title, arrow, depth, context, children: item }) => {
             return (

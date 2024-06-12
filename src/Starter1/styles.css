@@ -89,7 +89,8 @@ textarea {
 
 .tree-item-arrow {
   margin-right: 8px;
-  font-size: 0.7rem;
+  font-size: 1rem;
+  color: rgb(51, 75, 103);
 }
 
 .tree-item p {

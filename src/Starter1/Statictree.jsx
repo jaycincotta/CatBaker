@@ -10,7 +10,7 @@ import SelectUser from "../Login/SelectUser";
 import Save from "../Save";
 import { validateLines, buildTreeData } from "../TextParser";
 
-export default function ParseText({ text, onChange }) {
+export default function StaticTree({ text, onChange }) {
   const [generatedItems, setGeneratedItems] = useState(null);
   const [dataProvider, setDataProvider] = useState(null);
   const [collapsedCount, setCollapsedCount] = useState(0);
@@ -48,6 +48,12 @@ export default function ParseText({ text, onChange }) {
         caption: newTitle,
       },
     };
+  }
+
+  function onDrop(source, target) {
+    console.log(dataProvider.data.items);
+    console.log(source);
+    console.log(target);
   }
 
   function onItemChanged() {
@@ -93,7 +99,7 @@ export default function ParseText({ text, onChange }) {
           canDragAndDrop={collapsedCount === 0}
           canDropOnFolder={true}
           canReorderItems={true}
-          onDrop={onItemChanged}
+          onDrop={onDrop}
           onRenameItem={onItemChanged}
           onCollapseItem={onCollapseItem}
           onExpandItem={onExpandItem}
