@@ -1,23 +1,24 @@
 html {
-  background-color: #fffbf5;
+  background-color: #ffffff;
 }
 
 .App {
   font-family: sans-serif;
   text-align: left;
+  margin: 1rem 1rem;
 }
 
 .App-header {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 8px;
+  margin-bottom: 1rem;
 }
 
 .App-title {
   margin: auto auto;
   text-align: center;
-  font-family: Cambria, Georgia, "Times New Roman", Times, serif;
+  font-family: "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   font-style: italic;
   font-weight: 100;
   font-size: 1.6rem;
@@ -26,16 +27,16 @@ html {
 
 .App-lock {
   float: right;
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
 }
 
 .App-lock.locked {
-  color: darkred;
+  color: #b2b2b2;
 }
 
 .App-lock.unlocked {
-  color: green;
+  color: #1380b1;
 }
 
 .navigation {
@@ -43,47 +44,52 @@ html {
   flex-direction: row;
   align-items: center;
   align-self: flex-end;
-  width: 610px;
+  width: 640px;
 }
 
 .navigation p {
   margin: 0;
   padding: 0;
-  margin-right: 16px;
+  margin-right: 8px;
 }
 
 .navigation i {
-  font-size: 3rem;
-  margin-right: 16px;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
   cursor: pointer;
-  color: #37526f;
+  color: #000000;
 }
 
 .navigation i:disabled {
-  cursor: defautl;
-  color: #a5a5a5;
+  cursor: default;
+  color: #b2b2b2;
 }
 
 .version-remark {
+  font-size: 0.75rem;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  margin-left: 8px;
+  margin-left: 16px;
   margin-right: 0px;
   max-height: 80px;
   overflow: auto;
 }
 
 .version-remark img {
-  width: 36px;
-  height: 36px;
-  border-radius: 5px;
-  margin-right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #dfdfdf;
+  margin-right: 12px;
 }
 
 .version-remark span {
-  font-size: 0.8rem;
-  color: #464646;
+  font-size: 0.625rem;
+  color: #1380b1;
 }
 
 .save textarea {
@@ -97,8 +103,8 @@ html {
 .save button {
   width: 120px;
   height: 30px;
-  background-color: white;
-  border: 1px solid #a5a5a5;
+  background-color: #ffffff;
+  border: 1px solid #f06721;
   border-radius: 4px;
   cursor: pointer;
   margin-top: 16px;
@@ -106,16 +112,16 @@ html {
 }
 
 .save i {
-  font-size: 2rem;
-  color: #37526f;
+  font-size: 1.5rem;
+  color: #f06721;
 }
 
 dialog {
-  border: 1px solid #a5a5a5;
+  border: 1px solid #707070;
   outline: none;
   padding: 16px;
   box-sizing: border-box;
-  border-radius: 10px;
-  max-width: 700px;
+  border-radius: 0px;
+  max-width: 640px;
   cursor: default;
 }
