@@ -3,6 +3,8 @@ import useLoadTextFile from "../useLoadTextFile";
 import AppContext from "../Context/AppContext";
 import TreeEditor from "./TreeEditor";
 import "./styles.css";
+import { ControlledTreeEnvironment } from "react-complex-tree";
+import ControlledTreeEditor from "./ControlledTreeEditor";
 
 export default function CategoryBuilder() {
   const { setTreeText, version } = useContext(AppContext);
@@ -45,7 +47,7 @@ export default function CategoryBuilder() {
         />
       </div>
       {!!inputText && (
-        <TreeEditor text={inputText} onChange={handleTreeChange} />
+        <ControlledTreeEditor text={inputText} onChange={handleTreeChange} />
       )}
     </div>
   );

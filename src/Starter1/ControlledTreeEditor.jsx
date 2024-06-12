@@ -1,19 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
-import { UncontrolledTreeEnvironment, Tree } from "react-complex-tree";
-import { validateLines, buildTreeData } from "../TextParser";
+import { Tree, ControlledTreeEnvironment } from "react-complex-tree";
 import "react-complex-tree/lib/style-modern.css";
 import AppLock from "../AppLock";
 import SelectUser from "../Login/SelectUser";
 import Save from "../Save";
+import { validateLines, buildTreeData } from "../TextParser";
 
 // CustomTreeDataProvider to manage dynamic data
-const CustomTreeDataProvider = (initialText) => {
+const useCustomTreeDataProvider = (initialText) => {
   const [items, setItems] = useState();
   const [error, setError] = useState();
 
-  useEffect(() => {
-    refreshData(initialText);
-  }, [initialText]);
+  useEffect(() => {}, [initialText]);
 
   const getTreeItem = async (itemId) => items[itemId];
 
@@ -28,6 +26,43 @@ const CustomTreeDataProvider = (initialText) => {
       },
     }));
   };
+
+  return {
+    getTreeItem,
+    getChildren,
+    updateItem,
+    onChangeItemChildren,
+    onRenameItem,
+    refreshData: buildItems,
+    items,
+    error,
+  };
+};
+
+export default function ControlledTreeEditor({ text, onChange }) {
+  const environmentRef = useRef();
+  const [collapsedCount, setCollapsedCount] = useState(0);
+  const [items, setItems] = useState();
+  const [focusedItem, setFocusedItem] = useState();
+  const [expandedItems, setExpandedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [error, setError] = useState();
+
+  useEffect(() => {
+    const lines = text
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line !== "");
+    const error = validateLines(lines);
+    setError(error);
+    if (error) {
+      console.error(error);
+      return;
+    }
+    const generatedData = buildTreeData(lines);
+    setItems(generatedData);
+    setExpandedItems(Object.keys(generatedData));
+  }, [text]);
 
   const onChangeItemChildren = (itemId, newChildren) => {
     setItems((prevItems) => {
@@ -55,51 +90,16 @@ const CustomTreeDataProvider = (initialText) => {
           },
         },
       };
+      buildItemsText(updatedItems);
       return updatedItems;
     });
   };
 
-  const refreshData = (text) => {
-    const lines = text
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line !== "");
-    const error = validateLines(lines);
-    setError(error);
-    if (error) {
-      console.error(error);
-      return;
-    }
-    const generatedData = buildTreeData(lines);
-    setItems(generatedData);
-  };
-
-  return {
-    getTreeItem,
-    getChildren,
-    updateItem,
-    onChangeItemChildren,
-    onRenameItem,
-    refreshData,
-    items,
-    error,
-  };
-};
-
-export default function TreeEditor({ text, onChange }) {
-  const environmentRef = useRef();
-  const dataProvider = CustomTreeDataProvider(text);
-  const [collapsedCount, setCollapsedCount] = useState(0);
-
-  useEffect(() => {
-    if (text) dataProvider.refreshData(text);
-  }, [text]);
-
-  function onItemChanged() {
+  function buildItemsText(items) {
     let text = "";
 
     environmentRef.current.linearItems.tree.forEach((treeNode) => {
-      const currentNode = dataProvider.items[treeNode.item];
+      const currentNode = items[treeNode.item];
       text += `${"-".repeat(treeNode.depth)}${currentNode.data.caption}`;
       if (currentNode.data.dataId) text += `=${currentNode.data.dataId}`;
       text += "\n";
@@ -109,6 +109,7 @@ export default function TreeEditor({ text, onChange }) {
   }
 
   function onExpandItem(item) {
+    setExpandedItems([...expandedItems, item.index]);
     if (item.children.length === 0) return;
     setCollapsedCount((count) => {
       if (count <= 0) return 0;
@@ -117,54 +118,66 @@ export default function TreeEditor({ text, onChange }) {
   }
 
   function onCollapseItem(item) {
+    setExpandedItems(
+      expandedItems.filter(
+        (expandedItemIndex) => expandedItemIndex !== item.index,
+      ),
+    );
     if (item.children.length === 0) return;
     setCollapsedCount((count) => count + 1);
   }
 
   function onUnlockDragAndDrop() {
+    console.log("Unlcoking");
     setCollapsedCount(0);
-    environmentRef.current.expandAll("tree");
+    setExpandedItems(Object.keys(items));
   }
 
-  if (dataProvider.error) {
+  if (error) {
     return (
       <div className="error">
         <i className="fa fa-exclamation-triangle" />
         <p>
-          Error on line: {dataProvider.error.lineNumber} "
-          {dataProvider.error.lineText}"
+          Error on line: {error.lineNumber} "{error.lineText}"
           <br />
-          {dataProvider.error.message}
+          {error.message}
         </p>
       </div>
     );
   }
-  if (!dataProvider || (dataProvider && !dataProvider.items)) {
+
+  if (!items) {
     return <div>Loading...</div>;
   }
 
   return (
     <React.Fragment>
       <div className="output-section">
-        <UncontrolledTreeEnvironment
+        <ControlledTreeEnvironment
+          items={items}
           canDragAndDrop={collapsedCount === 0}
           canDropOnFolder={true}
+          canDropOnNonFolder={true}
           canReorderItems={true}
+          canRename={true}
           onCollapseItem={onCollapseItem}
           onExpandItem={onExpandItem}
           ref={environmentRef}
           getItemTitle={(item) => item.data.caption}
-          dataProvider={dataProvider}
-          onDrop={onItemChanged}
-          onRenameItem={onItemChanged}
+          //   onDrop={onRenameItem}
+          onRenameItem={onRenameItem}
           viewState={{
             ["tree"]: {
-              expandedItems: Object.keys(dataProvider.items),
+              focusedItem,
+              expandedItems,
+              selectedItems,
             },
           }}
+          onFocusItem={(item) => setFocusedItem(item.index)}
+          onSelectItems={(items) => setSelectedItems(items)}
         >
           <Tree treeId="tree" rootItem="root" treeLabel="Tree Editor" />
-        </UncontrolledTreeEnvironment>
+        </ControlledTreeEnvironment>
       </div>
       <div className="toolbar">
         <div className="toolbar-top">
