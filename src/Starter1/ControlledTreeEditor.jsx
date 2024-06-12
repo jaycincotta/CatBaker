@@ -105,6 +105,8 @@ export default function ControlledTreeEditor({ text, onChange }) {
       text += "\n";
     });
 
+    console.log(items);
+
     onChange(text);
   }
 
@@ -121,26 +123,79 @@ export default function ControlledTreeEditor({ text, onChange }) {
   function onDrop(sourceArray, target) {
     console.log(sourceArray);
     console.log(target);
-
     const source = sourceArray[0];
+
+    // // Maintain the linearItems array in the environmentRef
+
+    // // insert item in new index (linearIndex)
+    // const linearItems = environmentRef.current.linearItems.tree;
+    // const linearItem = linearItems.find((c) => c.item === source.index);
+
+    // // update the depth
+    // linearItem.depth =
+    //   target.targetType === "item" ? target.depth + 1 : target.depth;
+
+    // // remove item from it's current position
+    // const filteredLinearItems = linearItems.filter(
+    //   (c) => c.item === source.index,
+    // );
+
+    // // insert item in new index (linearIndex)
+    // filteredLinearItems.splice(target.linearIndex, 0, linearItem);
+
+    // console.log("LinearItems", environmentRef.current.linearItems.tree);
+
     const tempItems = { ...items };
-    const tempArray = Object.values(tempItems);
-    const oldParent = tempArray.find((c) => {
+    const itemsArray = Object.values(tempItems);
+    const oldParent = itemsArray.find((c) => {
       if (!c.children) return false;
       return c.children.find((i) => i === source.index);
     });
+
+    // Adds item to new parent's children array
 
     // Remove item from old parent
     oldParent.children = oldParent.children.filter((i) => i !== source.index);
 
     // Add item to new parent in correct order using childIndex
     const targetItem = target.targetItem ?? target.parentItem;
+    console.log(
+      "Before",
+      tempItems[targetItem]?.data?.caption ?? tempItems[targetItem].index,
+      tempItems[targetItem].children,
+    );
     tempItems[targetItem].children.splice(target.childIndex, 0, source.index);
+    console.log(
+      "After",
+      tempItems[targetItem]?.data?.caption ?? tempItems[targetItem].index,
+      tempItems[targetItem].children,
+    );
 
     // Assign old parent with updated children
     tempItems[oldParent.index] = oldParent;
 
+    // Moves the item to new position in the items object
+    // Remove the item from the array using filter and reassign the result back to itemsArray
+    const filteredItemsArray = Object.values(tempItems).filter(
+      (c) => c.index !== source.index,
+    );
+
+    // Insert the item at the target linear index
+    filteredItemsArray.splice(target.linearIndex, 0, source);
+
+    let indexCounter = 0;
+    const itemsObject = filteredItemsArray.reduce((acc, item) => {
+      if (item.index === "root") {
+        acc["root"] = item;
+        return acc;
+      }
+      acc[`item-${indexCounter}`] = item;
+      indexCounter++;
+      return acc;
+    }, {});
+
     setItems(tempItems);
+    buildItemsText(tempItems);
   }
 
   function onCollapseItem(item) {
@@ -176,21 +231,8 @@ export default function ControlledTreeEditor({ text, onChange }) {
     return <div>Loading...</div>;
   }
 
-  console.log(items);
-
-  function reorderItems() {
-    const tempItems = { ...items };
-
-    var temp = tempItems["item-6"];
-    tempItems["item-6"] = tempItems["item-8"];
-    tempItems["item-8"] = temp;
-
-    setItems(tempItems);
-  }
-
   return (
     <React.Fragment>
-      <button onClick={reorderItems}>Reorder</button>
       <div className="output-section">
         <ControlledTreeEnvironment
           items={items}

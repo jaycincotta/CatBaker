@@ -31,7 +31,6 @@ export default function CategoryBuilder() {
   };
 
   const handleTreeChange = (text) => {
-    console.log("Tree Changed");
     setInputText(text);
     setTreeText(text);
   };
