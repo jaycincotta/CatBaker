@@ -72,6 +72,30 @@ textarea {
   font-weight: bold;
 }
 
+.tree-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: none;
+  background-color: transparent;
+  padding: 4px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.tree-item:hover {
+  background-color: #eee;
+}
+
+.tree-item-arrow {
+  margin-right: 8px;
+  font-size: 0.7rem;
+}
+
+.tree-item p {
+  margin: 0;
+}
+
 .toolbar {
   display: flex;
   flex-direction: column;

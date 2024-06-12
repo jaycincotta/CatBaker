@@ -175,6 +175,38 @@ export default function ControlledTreeEditor({ text, onChange }) {
           }}
           onFocusItem={(item) => setFocusedItem(item.index)}
           onSelectItems={(items) => setSelectedItems(items)}
+          renderItemTitle={({ title }) => <p>{title}</p>}
+          renderItemArrow={({ item, context }) => {
+            console.log(item);
+            return item.children && item.children.length > 0 ? (
+              <span {...context.arrowProps}>
+                {context.isExpanded ? (
+                  <i className="fa-solid fa-chevron-down tree-item-arrow"></i>
+                ) : (
+                  <i className="fa-solid fa-chevron-right tree-item-arrow"></i>
+                )}
+              </span>
+            ) : null;
+          }}
+          renderItem={({ title, arrow, depth, context, children: item }) => {
+            return (
+              <li
+                {...context.itemContainerWithChildrenProps}
+                className="tree-item-container"
+              >
+                <button
+                  {...context.itemContainerWithoutChildrenProps}
+                  {...context.interactiveElementProps}
+                  className="tree-item"
+                  style={{ marginLeft: depth * 20 + "px" }}
+                >
+                  {arrow}
+                  {title}
+                </button>
+                {item}
+              </li>
+            );
+          }}
         >
           <Tree treeId="tree" rootItem="root" treeLabel="Tree Editor" />
         </ControlledTreeEnvironment>
