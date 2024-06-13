@@ -252,9 +252,9 @@ export default function ControlledTreeEditor({ text, onChange }) {
               return item.children && item.children.length > 0 ? (
                 <span {...context.arrowProps}>
                   {context.isExpanded ? (
-                    <i className="fa-solid fa-folder-open tree-item-arrow"></i>
+                    <i className="fa-regular fa-folder tree-item-arrow"></i>
                   ) : (
-                    <i className="fa-solid fa-folder tree-item-arrow"></i>
+                    <i className="fa-regular fa-folder-closed tree-item-arrow"></i>
                   )}
                 </span>
               ) : (
