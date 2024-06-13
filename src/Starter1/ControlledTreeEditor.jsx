@@ -1,43 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Tree, ControlledTreeEnvironment } from "react-complex-tree";
-import "react-complex-tree/lib/style-modern.css";
+import { validateLines, buildTreeData } from "../TextParser";
 import AppLock from "../AppLock";
 import SelectUser from "../Login/SelectUser";
 import Save from "../Save";
-import { validateLines, buildTreeData } from "../TextParser";
-
-// CustomTreeDataProvider to manage dynamic data
-const useCustomTreeDataProvider = (initialText) => {
-  const [items, setItems] = useState();
-  const [error, setError] = useState();
-
-  useEffect(() => {}, [initialText]);
-
-  const getTreeItem = async (itemId) => items[itemId];
-
-  const getChildren = async (itemId) => items[itemId].children;
-
-  const updateItem = (itemId, newData) => {
-    setItems((prevItems) => ({
-      ...prevItems,
-      [itemId]: {
-        ...prevItems[itemId],
-        data: newData,
-      },
-    }));
-  };
-
-  return {
-    getTreeItem,
-    getChildren,
-    updateItem,
-    onChangeItemChildren,
-    onRenameItem,
-    refreshData: buildItems,
-    items,
-    error,
-  };
-};
+import "react-complex-tree/lib/style-modern.css";
+import "./styles.css";
 
 export default function ControlledTreeEditor({ text, onChange }) {
   const environmentRef = useRef();
@@ -71,20 +39,6 @@ export default function ControlledTreeEditor({ text, onChange }) {
     if (!items || !environmentRef?.current?.linearItems?.tree) return;
     buildItemsText(items);
   }, [items]);
-
-  const onChangeItemChildren = (itemId, newChildren) => {
-    setItems((prevItems) => {
-      const updatedItems = {
-        ...prevItems,
-        [itemId]: {
-          ...prevItems[itemId],
-          children: newChildren,
-        },
-      };
-      console.log(updatedItems);
-      return updatedItems;
-    });
-  };
 
   const onRenameItem = (item, name) => {
     setItems((prevItems) => {
@@ -136,7 +90,6 @@ export default function ControlledTreeEditor({ text, onChange }) {
   }
 
   function onUnlockDragAndDrop() {
-    console.log("Unlcoking");
     setCollapsedCount(0);
     setExpandedItems(Object.keys(items));
   }
@@ -264,14 +217,11 @@ export default function ControlledTreeEditor({ text, onChange }) {
     );
   };
 
-  if (!items) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <React.Fragment>
       {error && <ErrorMessage error={error} />}
-      {!error && (
+      {!items && !error && <div>Loading...</div>}
+      {items && !error && (
         <div className="output-section">
           <ControlledTreeEnvironment
             items={items}
@@ -311,7 +261,7 @@ export default function ControlledTreeEditor({ text, onChange }) {
               );
             }}
             renderItem={({ title, arrow, depth, context, children: item }) => {
-              console.log(context);
+              // console.log(context);
               return (
                 <li
                   {...context.itemContainerWithChildrenProps}
