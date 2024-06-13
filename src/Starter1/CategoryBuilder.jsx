@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
-import ParseText from "./ParseText";
 import useLoadTextFile from "../useLoadTextFile";
-import "./styles.css";
 import AppContext from "../Context/AppContext";
+import TreeEditor from "./TreeEditor";
+import "./styles.css";
+import { ControlledTreeEnvironment } from "react-complex-tree";
+import ControlledTreeEditor from "./ControlledTreeEditor";
+import StaticTree from "./Statictree";
 
-const Tester = () => {
+export default function CategoryBuilder() {
   const { setTreeText, version } = useContext(AppContext);
   const defaultText = useLoadTextFile("/sampleText.txt");
   const [inputText, setInputText] = useState(
@@ -22,6 +25,7 @@ const Tester = () => {
   }, [defaultText, version]);
 
   const handleInputChange = (e) => {
+    console.log("Input Changed");
     setInputText(e.target.value);
     setTreeText(e.target.value);
   };
@@ -37,15 +41,16 @@ const Tester = () => {
         <textarea
           value={inputText}
           onChange={handleInputChange}
+          onPaste={handleInputChange}
           placeholder="Enter text here"
           style={{ resize: "none" }} // Disable resizing
         />
       </div>
       {!!inputText && (
-        <ParseText text={inputText} onChange={handleTreeChange} />
+        // <StaticTree text={inputText} onChange={handleTreeChange} />
+        <ControlledTreeEditor text={inputText} onChange={handleTreeChange} />
+        // <TreeEditor text={inputText} onChange={handleTreeChange} />
       )}
     </div>
   );
-};
-
-export default Tester;
+}
