@@ -37,6 +37,7 @@ export default function ControlledTreeEditor({ text, onChange }) {
 
   useEffect(() => {
     if (!items || !environmentRef?.current?.linearItems?.tree) return;
+
     buildItemsText(items);
   }, [items]);
 
