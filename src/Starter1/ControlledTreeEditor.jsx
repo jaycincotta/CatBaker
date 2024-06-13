@@ -309,6 +309,32 @@ export default function ControlledTreeEditor({ text, onChange }) {
     const [isRenaming, setIsRenaming] = useState(false);
     const [newName, setNewName] = useState(item.data.caption);
 
+    console.log(context.isRenaming);
+
+    useEffect(() => {
+      setNewName(item.data.caption);
+    }, [item.data.caption]);
+
+    useEffect(() => {
+      const handleKeyDown = (e) => {
+        if (e.key === "F2" && context.isRenaming) {
+          setIsRenaming(true);
+          context.startRenaming();
+        }
+      };
+
+      document.addEventListener("keydown", handleKeyDown);
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+      };
+    }, [isRenaming]);
+
+    useEffect(() => {
+      if (isRenaming && inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, []);
+
     useEffect(() => {
       setNewName(item.data.caption);
     }, [item.data.caption]);
@@ -316,6 +342,7 @@ export default function ControlledTreeEditor({ text, onChange }) {
     const handleRename = () => {
       handleRenameItem(item.index, newName);
       setIsRenaming(false);
+      context.stopRenaming();
     };
 
     return (
@@ -334,9 +361,7 @@ export default function ControlledTreeEditor({ text, onChange }) {
             autoFocus
           />
         ) : (
-          <span onDoubleClick={() => setIsRenaming(true)}>
-            {item.data.caption}
-          </span>
+          <span>{item.data.caption}</span>
         )}
       </div>
     );
@@ -384,22 +409,7 @@ export default function ControlledTreeEditor({ text, onChange }) {
           }}
           onFocusItem={(item) => setFocusedItem(item.index)}
           onSelectItems={(items) => setSelectedItems(items)}
-          renderItemTitle={({ context, info, item, title }) => {
-            // console.log(context);
-            // return info.isRenaming ? (
-            //   <input type="text" value={title} {...context} />
-            // ) : (
-            //   <p>{title}</p>
-            // );
-
-            return (
-              <input
-                type="text"
-                value={title}
-                {...context.interactiveElementProps}
-              />
-            );
-          }}
+          // renderItemTitle={renderItemTitle}
           renderItemArrow={({ item, context }) => {
             // console.log(item);
             return item.children && item.children.length > 0 ? (
@@ -411,7 +421,7 @@ export default function ControlledTreeEditor({ text, onChange }) {
                 )}
               </span>
             ) : (
-              <i class="fa-regular fa-file tree-item-arrow"></i>
+              <i className="fa-regular fa-file tree-item-arrow"></i>
             );
           }}
           renderItem={({ title, arrow, depth, context, children: item }) => {
@@ -455,3 +465,12 @@ export default function ControlledTreeEditor({ text, onChange }) {
     </React.Fragment>
   );
 }
+
+({ context, info, item, title }) => {
+  // console.log(context);
+  // return info.isRenaming ? (
+  //   <input type="text" value={title} {...context} />
+  // ) : (
+  //   <p>{title}</p>
+  // );
+};
