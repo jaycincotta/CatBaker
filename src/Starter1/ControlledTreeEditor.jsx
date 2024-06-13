@@ -125,34 +125,46 @@ export default function ControlledTreeEditor({ text, onChange }) {
     console.log(target);
     const source = sourceArray[0];
 
-    // // Maintain the linearItems array in the environmentRef
+    const newItemsObject = updateParentChildren(source, target);
+    const finalItemsObject = moveItemsPosition(newItemsObject, source, target);
+    // updateLinearItems(source, target);
 
-    // // insert item in new index (linearIndex)
-    // const linearItems = environmentRef.current.linearItems.tree;
-    // const linearItem = linearItems.find((c) => c.item === source.index);
+    setItems(finalItemsObject);
+    buildItemsText(finalItemsObject);
+  }
 
-    // // update the depth
-    // linearItem.depth =
-    //   target.targetType === "item" ? target.depth + 1 : target.depth;
+  function moveItemsPosition(itemsObject, source, target) {
+    // Moves the item to new position in the items object
+    // Remove the item from the array using filter and reassign the result back to itemsArray
+    const filteredItemsArray = Object.values(itemsObject).filter(
+      (c) => c.index !== source.index,
+    );
 
-    // // remove item from it's current position
-    // const filteredLinearItems = linearItems.filter(
-    //   (c) => c.item === source.index,
-    // );
+    // Insert the item at the target linear index
+    filteredItemsArray.splice(target.linearIndex, 0, source);
 
-    // // insert item in new index (linearIndex)
-    // filteredLinearItems.splice(target.linearIndex, 0, linearItem);
+    let indexCounter = 0;
+    const newObj = filteredItemsArray.reduce((acc, item) => {
+      if (item.index === "root") {
+        acc["root"] = item;
+        return acc;
+      }
+      acc[`item-${indexCounter}`] = item;
+      indexCounter++;
+      return acc;
+    }, {});
+    return newObj;
+  }
 
-    // console.log("LinearItems", environmentRef.current.linearItems.tree);
-
+  function updateParentChildren(source, target) {
     const tempItems = { ...items };
     const itemsArray = Object.values(tempItems);
+
+    // find source's old parent
     const oldParent = itemsArray.find((c) => {
       if (!c.children) return false;
       return c.children.find((i) => i === source.index);
     });
-
-    // Adds item to new parent's children array
 
     // Remove item from old parent
     oldParent.children = oldParent.children.filter((i) => i !== source.index);
@@ -174,28 +186,30 @@ export default function ControlledTreeEditor({ text, onChange }) {
     // Assign old parent with updated children
     tempItems[oldParent.index] = oldParent;
 
-    // Moves the item to new position in the items object
-    // Remove the item from the array using filter and reassign the result back to itemsArray
-    const filteredItemsArray = Object.values(tempItems).filter(
-      (c) => c.index !== source.index,
-    );
+    return tempItems;
+  }
 
-    // Insert the item at the target linear index
-    filteredItemsArray.splice(target.linearIndex, 0, source);
+  function updateLinearItems(source, target) {
+    // Maintain the linearItems array in the environmentRef
 
-    let indexCounter = 0;
-    const itemsObject = filteredItemsArray.reduce((acc, item) => {
-      if (item.index === "root") {
-        acc["root"] = item;
-        return acc;
-      }
-      acc[`item-${indexCounter}`] = item;
-      indexCounter++;
-      return acc;
-    }, {});
+    // insert item in new index (linearIndex)
+    const linearItems = environmentRef.current.linearItems.tree;
+    const linearItem = linearItems.find((c) => c.item === source.index);
 
-    setItems(tempItems);
-    buildItemsText(tempItems);
+    // update the depth
+    linearItem.depth =
+      target.targetType === "item" ? target.depth + 1 : target.depth;
+
+    // // reorder the linearItems array
+    // // remove item from it's current position
+    // const filteredLinearItems = linearItems.filter(
+    //   (c) => c.item === source.index,
+    // );
+
+    // // insert item in new index (linearIndex)
+    // filteredLinearItems.splice(target.linearIndex, 0, linearItem);
+
+    console.log("LinearItems", environmentRef.current.linearItems.tree);
   }
 
   function onCollapseItem(item) {
