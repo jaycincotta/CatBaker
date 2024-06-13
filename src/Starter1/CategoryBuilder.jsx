@@ -1,11 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import useLoadTextFile from "../useLoadTextFile";
 import AppContext from "../Context/AppContext";
-import TreeEditor from "./TreeEditor";
-import "./styles.css";
-import { ControlledTreeEnvironment } from "react-complex-tree";
 import ControlledTreeEditor from "./ControlledTreeEditor";
-import StaticTree from "./Statictree";
+import "./styles.css";
 
 export default function CategoryBuilder() {
   const { setTreeText, version } = useContext(AppContext);
@@ -13,24 +10,29 @@ export default function CategoryBuilder() {
   const [inputText, setInputText] = useState(
     version ? version.TreeData : defaultText,
   );
+  const inputRef = useRef();
 
   useEffect(() => {
     if (version) {
       setInputText(version.TreeData);
       setTreeText(version.TreeData);
+      inputRef.current.value = version.TreeData;
     } else {
       setInputText(defaultText);
       setTreeText(defaultText);
+      inputRef.current.value = defaultText;
     }
   }, [defaultText, version]);
 
   const handleInputChange = (e) => {
-    console.log("Input Changed");
     setInputText(e.target.value);
     setTreeText(e.target.value);
   };
 
   const handleTreeChange = (text) => {
+    if (text.trim() === inputRef.current.value.trim()) {
+      return;
+    }
     setInputText(text);
     setTreeText(text);
   };
@@ -39,6 +41,8 @@ export default function CategoryBuilder() {
     <div className="container">
       <div className="input-section">
         <textarea
+          ref={inputRef}
+          spellCheck="false"
           value={inputText}
           onChange={handleInputChange}
           onPaste={handleInputChange}
@@ -47,9 +51,7 @@ export default function CategoryBuilder() {
         />
       </div>
       {!!inputText && (
-        // <StaticTree text={inputText} onChange={handleTreeChange} />
         <ControlledTreeEditor text={inputText} onChange={handleTreeChange} />
-        // <TreeEditor text={inputText} onChange={handleTreeChange} />
       )}
     </div>
   );

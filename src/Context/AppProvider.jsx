@@ -95,7 +95,8 @@ export default function AppProvider({ children }) {
     saveVersion: saveVersion,
     version: version,
     latestVersionId: latestVersionId,
-    setTreeText,
+    setTreeText: setTreeText,
+    treeText: treeText,
   };
 
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;
