@@ -80,11 +80,15 @@ textarea {
   background-color: transparent;
   padding: 4px;
   cursor: pointer;
-  width: 100%;
+  width: 90%;
 }
 
 .tree-item:hover {
   background-color: #eee;
+}
+
+.tree-item-focused {
+  background-color: #ebf0f2;
 }
 
 .tree-item-arrow {

@@ -65,6 +65,7 @@ export default function StaticTree({ text, onChange }) {
       text += "\n";
     });
 
+    console.log(text);
     onChange(text);
   }
 
@@ -92,14 +93,13 @@ export default function StaticTree({ text, onChange }) {
 
   return (
     <React.Fragment>
-      <div className="output-section">
+      <div className="output-section" key={text}>
         <UncontrolledTreeEnvironment
-          key={text}
           ref={environmentRef}
           canDragAndDrop={collapsedCount === 0}
           canDropOnFolder={true}
           canReorderItems={true}
-          onDrop={onDrop}
+          onDrop={onItemChanged}
           onRenameItem={onItemChanged}
           onCollapseItem={onCollapseItem}
           onExpandItem={onExpandItem}

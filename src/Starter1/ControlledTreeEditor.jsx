@@ -60,9 +60,17 @@ export default function ControlledTreeEditor({ text, onChange }) {
       return;
     }
     const generatedData = buildTreeData(lines);
+
+    if (JSON.stringify(generatedData) === JSON.stringify(items)) return;
+
     setItems(generatedData);
     setExpandedItems(Object.keys(generatedData));
   }, [text]);
+
+  useEffect(() => {
+    if (!items || !environmentRef?.current?.linearItems?.tree) return;
+    buildItemsText(items);
+  }, [items]);
 
   const onChangeItemChildren = (itemId, newChildren) => {
     setItems((prevItems) => {
@@ -95,42 +103,30 @@ export default function ControlledTreeEditor({ text, onChange }) {
     });
   };
 
-  function buildItemsText(items) {
+  function buildItemsText(itemsObject) {
     let text = "";
 
     environmentRef.current.linearItems.tree.forEach((treeNode) => {
-      const currentNode = items[treeNode.item];
+      const currentNode = itemsObject[treeNode.item];
       text += `${"-".repeat(treeNode.depth)}${currentNode.data.caption}`;
       if (currentNode.data.dataId) text += `=${currentNode.data.dataId}`;
       text += "\n";
     });
 
-    console.log(items);
-
     onChange(text);
   }
 
-  function onExpandItem(item) {
-    setExpandedItems([...expandedItems, item.index]);
-    if (item.children.length === 0) return;
-    setCollapsedCount((count) => {
-      if (count <= 0) return 0;
-      return count - 1;
-    });
-  }
-
-  //
   function onDrop(sourceArray, target) {
     console.log(sourceArray);
     console.log(target);
     const source = sourceArray[0];
 
-    const newItemsObject = updateParentChildren(source, target);
-    const finalItemsObject = moveItemsPosition(newItemsObject, source, target);
-    // updateLinearItems(source, target);
+    // const newItemsObject = updateParentChildren(source, target);
+    // const finalItemsObject = moveItemsPosition(newItemsObject, source, target);
+    // // updateLinearItems(source, target);
 
-    setItems(finalItemsObject);
-    buildItemsText(finalItemsObject);
+    // setItems(() => JSON.parse(JSON.stringify(newItemsObject)));
+    // buildItemsText(newItemsObject);
   }
 
   function moveItemsPosition(itemsObject, source, target) {
@@ -157,7 +153,9 @@ export default function ControlledTreeEditor({ text, onChange }) {
   }
 
   function updateParentChildren(source, target) {
-    const tempItems = { ...items };
+    // const tempItems = { ...items };
+    // Create a deep copy of the items object
+    const tempItems = JSON.parse(JSON.stringify(items));
     const itemsArray = Object.values(tempItems);
 
     // find source's old parent
@@ -168,23 +166,32 @@ export default function ControlledTreeEditor({ text, onChange }) {
 
     // Remove item from old parent
     oldParent.children = oldParent.children.filter((i) => i !== source.index);
+    // console.log(
+    //   "Old Parent",
+    //   oldParent?.data?.caption ?? oldParent.index,
+    //   oldParent.children,
+    // );
 
     // Add item to new parent in correct order using childIndex
     const targetItem = target.targetItem ?? target.parentItem;
-    console.log(
-      "Before",
-      tempItems[targetItem]?.data?.caption ?? tempItems[targetItem].index,
-      tempItems[targetItem].children,
-    );
+    // console.log(
+    //   "New Parent Before",
+    //   tempItems[targetItem]?.data?.caption ?? tempItems[targetItem].index,
+    //   tempItems[targetItem].children,
+    // );
     tempItems[targetItem].children.splice(target.childIndex, 0, source.index);
-    console.log(
-      "After",
-      tempItems[targetItem]?.data?.caption ?? tempItems[targetItem].index,
-      tempItems[targetItem].children,
-    );
+    // console.log(
+    //   "New Parent After",
+    //   tempItems[targetItem]?.data?.caption ?? tempItems[targetItem].index,
+    //   tempItems[targetItem].children,
+    // );
 
     // Assign old parent with updated children
     tempItems[oldParent.index] = oldParent;
+    // console.log(
+    //   "Updated Old Parent in Object",
+    //   tempItems[oldParent.index].children,
+    // );
 
     return tempItems;
   }
@@ -212,6 +219,15 @@ export default function ControlledTreeEditor({ text, onChange }) {
     console.log("LinearItems", environmentRef.current.linearItems.tree);
   }
 
+  function onExpandItem(item) {
+    setExpandedItems([...expandedItems, item.index]);
+    if (item.children.length === 0) return;
+    setCollapsedCount((count) => {
+      if (count <= 0) return 0;
+      return count - 1;
+    });
+  }
+
   function onCollapseItem(item) {
     setExpandedItems(
       expandedItems.filter(
@@ -227,6 +243,104 @@ export default function ControlledTreeEditor({ text, onChange }) {
     setCollapsedCount(0);
     setExpandedItems(Object.keys(items));
   }
+
+  const onItemsDropped = (items, target) => {
+    if (target.targetType === "between-items") {
+      setItems((prevData) => {
+        if (!prevData) return prevData;
+        const parentNode = prevData[target.parentItem];
+        const insertIndex = target.childIndex;
+        const itemIds = items.map((item) => item.index);
+
+        // Remove the items from their previous parent
+        Object.values(prevData).forEach((item) => {
+          if (item.children) {
+            item.children = item.children.filter(
+              (child) => !itemIds.includes(child),
+            );
+          }
+        });
+
+        // Add the items to the new parent at the new position
+        const newData = {
+          ...prevData,
+          [parentNode.index]: {
+            ...parentNode,
+            children: [
+              ...(parentNode.children ?? []).slice(0, insertIndex),
+              ...itemIds,
+              ...(parentNode.children ?? []).slice(insertIndex),
+            ],
+          },
+        };
+        return newData;
+      });
+    }
+    if (target.targetType === "item") {
+      setItems((prevData) => {
+        if (!prevData) return prevData;
+        const parentNode = prevData[target.targetItem];
+        const itemIds = items.map((item) => item.index);
+
+        // Remove the items from their previous parent
+        Object.values(prevData).forEach((item) => {
+          if (item.children) {
+            item.children = item.children.filter(
+              (child) => !itemIds.includes(child),
+            );
+          }
+        });
+
+        // Add the items to the new parent
+        const newData = {
+          ...prevData,
+          [parentNode.index]: {
+            ...parentNode,
+            children: [...(parentNode.children ?? []), ...itemIds],
+          },
+        };
+
+        return newData;
+      });
+    }
+  };
+
+  const renderItemTitle = ({ item, context }) => {
+    const [isRenaming, setIsRenaming] = useState(false);
+    const [newName, setNewName] = useState(item.data.caption);
+
+    useEffect(() => {
+      setNewName(item.data.caption);
+    }, [item.data.caption]);
+
+    const handleRename = () => {
+      handleRenameItem(item.index, newName);
+      setIsRenaming(false);
+    };
+
+    return (
+      <div>
+        {context.isRenaming && isRenaming ? (
+          <input
+            type="text"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            onBlur={handleRename}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleRename();
+              }
+            }}
+            autoFocus
+          />
+        ) : (
+          <span onDoubleClick={() => setIsRenaming(true)}>
+            {item.data.caption}
+          </span>
+        )}
+      </div>
+    );
+  };
 
   if (error) {
     return (
@@ -259,7 +373,7 @@ export default function ControlledTreeEditor({ text, onChange }) {
           onExpandItem={onExpandItem}
           ref={environmentRef}
           getItemTitle={(item) => item.data.caption}
-          onDrop={onDrop}
+          onDrop={onItemsDropped}
           onRenameItem={onRenameItem}
           viewState={{
             ["tree"]: {
@@ -270,7 +384,22 @@ export default function ControlledTreeEditor({ text, onChange }) {
           }}
           onFocusItem={(item) => setFocusedItem(item.index)}
           onSelectItems={(items) => setSelectedItems(items)}
-          renderItemTitle={({ title }) => <p>{title}</p>}
+          renderItemTitle={({ context, info, item, title }) => {
+            // console.log(context);
+            // return info.isRenaming ? (
+            //   <input type="text" value={title} {...context} />
+            // ) : (
+            //   <p>{title}</p>
+            // );
+
+            return (
+              <input
+                type="text"
+                value={title}
+                {...context.interactiveElementProps}
+              />
+            );
+          }}
           renderItemArrow={({ item, context }) => {
             // console.log(item);
             return item.children && item.children.length > 0 ? (
@@ -286,6 +415,7 @@ export default function ControlledTreeEditor({ text, onChange }) {
             );
           }}
           renderItem={({ title, arrow, depth, context, children: item }) => {
+            console.log(context);
             return (
               <li
                 {...context.itemContainerWithChildrenProps}
@@ -294,7 +424,11 @@ export default function ControlledTreeEditor({ text, onChange }) {
                 <button
                   {...context.itemContainerWithoutChildrenProps}
                   {...context.interactiveElementProps}
-                  className="tree-item"
+                  className={
+                    context.isSelected
+                      ? "tree-item tree-item-focused"
+                      : "tree-item"
+                  }
                   style={{ marginLeft: depth * 20 + "px" }}
                 >
                   {arrow}

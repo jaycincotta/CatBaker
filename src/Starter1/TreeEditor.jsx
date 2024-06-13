@@ -7,7 +7,7 @@ import SelectUser from "../Login/SelectUser";
 import Save from "../Save";
 
 // CustomTreeDataProvider to manage dynamic data
-const CustomTreeDataProvider = (initialText) => {
+const useCustomTreeDataProvider = (initialText) => {
   const [items, setItems] = useState();
   const [error, setError] = useState();
 
@@ -30,6 +30,7 @@ const CustomTreeDataProvider = (initialText) => {
   };
 
   const onChangeItemChildren = (itemId, newChildren) => {
+    console.log("Drag Operation on: ", itemId, "w/ children: ", newChildren);
     setItems((prevItems) => {
       const updatedItems = {
         ...prevItems,
@@ -38,7 +39,7 @@ const CustomTreeDataProvider = (initialText) => {
           children: newChildren,
         },
       };
-      console.log(updatedItems);
+      console.log("Updated Items:", updatedItems);
       return updatedItems;
     });
   };
@@ -88,7 +89,7 @@ const CustomTreeDataProvider = (initialText) => {
 
 export default function TreeEditor({ text, onChange }) {
   const environmentRef = useRef();
-  const dataProvider = CustomTreeDataProvider(text);
+  const dataProvider = useCustomTreeDataProvider(text);
   const [collapsedCount, setCollapsedCount] = useState(0);
 
   useEffect(() => {
@@ -150,6 +151,7 @@ export default function TreeEditor({ text, onChange }) {
           canDragAndDrop={collapsedCount === 0}
           canDropOnFolder={true}
           canReorderItems={true}
+          canRenameItem={true}
           onCollapseItem={onCollapseItem}
           onExpandItem={onExpandItem}
           ref={environmentRef}
@@ -162,6 +164,39 @@ export default function TreeEditor({ text, onChange }) {
               expandedItems: Object.keys(dataProvider.items),
             },
           }}
+          // renderItemTitle={({ title }) => <p>{title}</p>}
+          // renderItemArrow={({ item, context }) => {
+          //   return item.children && item.children.length > 0 ? (
+          //     <span {...context.arrowProps}>
+          //       {context.isExpanded ? (
+          //         <i className="fa-solid fa-folder-open tree-item-arrow"></i>
+          //       ) : (
+          //         <i className="fa-solid fa-folder tree-item-arrow"></i>
+          //       )}
+          //     </span>
+          //   ) : (
+          //     <i class="fa-regular fa-file tree-item-arrow"></i>
+          //   );
+          // }}
+          // renderItem={({ title, arrow, depth, context, children: item }) => {
+          //   return (
+          //     <li
+          //       {...context.itemContainerWithChildrenProps}
+          //       className="tree-item-container"
+          //     >
+          //       <button
+          //         {...context.itemContainerWithoutChildrenProps}
+          //         {...context.interactiveElementProps}
+          //         className="tree-item"
+          //         style={{ marginLeft: depth * 20 + "px" }}
+          //       >
+          //         {arrow}
+          //         {title}
+          //       </button>
+          //       {item}
+          //     </li>
+          //   );
+          // }}
         >
           <Tree treeId="tree" rootItem="root" treeLabel="Tree Editor" />
         </UncontrolledTreeEnvironment>

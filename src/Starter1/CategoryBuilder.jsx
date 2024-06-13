@@ -49,6 +49,7 @@ export default function CategoryBuilder() {
       {!!inputText && (
         // <StaticTree text={inputText} onChange={handleTreeChange} />
         <ControlledTreeEditor text={inputText} onChange={handleTreeChange} />
+        // <TreeEditor text={inputText} onChange={handleTreeChange} />
       )}
     </div>
   );
