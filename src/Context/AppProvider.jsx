@@ -44,7 +44,11 @@ export default function AppProvider({ children }) {
   }
 
   function fetchVersion(version) {
-    const url = AppSettings.CatBaker.GetVersion(user.UserId, version ?? "");
+    const validVersion = version === 0 ? 1 : version;
+    const url = AppSettings.CatBaker.GetVersion(
+      user.UserId,
+      validVersion ?? "",
+    );
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -91,7 +95,8 @@ export default function AppProvider({ children }) {
     saveVersion: saveVersion,
     version: version,
     latestVersionId: latestVersionId,
-    setTreeText,
+    setTreeText: setTreeText,
+    treeText: treeText,
   };
 
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;

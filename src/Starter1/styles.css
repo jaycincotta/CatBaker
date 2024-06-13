@@ -26,13 +26,25 @@ textarea {
   overflow-y: auto;
 }
 
-.error-message {
-  font-size: 1.5rem;
-  background-color: red;
-  color: white;
+.error {
+  font-size: 1rem;
+  border-radius: 4px;
+  background-color: rgba(240, 214, 214, 0.616);
+  border: 1px solid #ccc;
   text-align: center;
   padding: 1rem;
   margin-bottom: 0.5rem;
+  width: 55vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.error i {
+  font-size: 1.5rem;
+  color: orange;
+  margin-right: 16px;
 }
 
 code,
@@ -58,6 +70,35 @@ textarea {
 
 .react-complex-tree-node .title {
   font-weight: bold;
+}
+
+.tree-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: none;
+  background-color: transparent;
+  padding: 4px;
+  cursor: pointer;
+  width: 90%;
+}
+
+.tree-item:hover {
+  background-color: #eee;
+}
+
+.tree-item-focused {
+  background-color: #ebf0f2;
+}
+
+.tree-item-arrow {
+  margin-right: 8px;
+  font-size: 1rem;
+  color: rgb(51, 75, 103);
+}
+
+.tree-item p {
+  margin: 0;
 }
 
 .toolbar {

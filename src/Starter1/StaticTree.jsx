@@ -8,98 +8,9 @@ import "react-complex-tree/lib/style-modern.css";
 import AppLock from "../AppLock";
 import SelectUser from "../Login/SelectUser";
 import Save from "../Save";
+import { validateLines, buildTreeData } from "../TextParser";
 
-const parse = (line) => {
-  let depth = 0;
-  while (line[depth] === "-") {
-    depth++;
-  }
-  const trimmedLine = line.slice(depth).trim();
-  const [caption, ...dataParts] = trimmedLine
-    .split("=")
-    .map((part) => part.trim());
-  const dataId = dataParts.join("=");
-  return {
-    caption,
-    depth: depth,
-    dataId,
-  };
-};
-
-const formatErrorMessage = (lineNumber, message, lineText) => (
-  <div>
-    <div className="error-message">{message}</div>
-    line {lineNumber}: <code>{lineText}</code>
-  </div>
-);
-
-const validateLines = (lines) => {
-  if (lines.length === 0) return null;
-
-  let previousDepth = -1;
-  for (let i = 0; i < lines.length; i++) {
-    const parsedLine = parse(lines[i]);
-    if (i === 0 && parsedLine.depth !== 0) {
-      return formatErrorMessage(
-        i + 1,
-        "The first category may not be nested.",
-        lines[i],
-      );
-    }
-    if (parsedLine.depth > previousDepth + 1) {
-      return formatErrorMessage(
-        i + 1,
-        "Category is too deeply nested",
-        lines[i],
-      );
-    }
-    previousDepth = parsedLine.depth;
-  }
-
-  return null;
-};
-
-const buildTreeData = (lines) => {
-  const root = { index: "root", isFolder: true, children: [] };
-  const items = { root };
-  const parentsStack = [root];
-
-  lines.forEach((line, index) => {
-    const parsedLine = parse(line);
-    const newItem = {
-      index: `item-${index}`,
-      id: parsedLine.caption,
-      data: {
-        caption: parsedLine.caption,
-        dataId: parsedLine.dataId,
-      },
-      isFolder: true,
-      children: [],
-      parentId: null, // Initialize parentId to null
-    };
-
-    while (parentsStack.length > parsedLine.depth + 1) {
-      parentsStack.pop();
-    }
-
-    const currentParent = parentsStack[parentsStack.length - 1];
-    currentParent.children.push(newItem.index);
-    currentParent.isFolder = true;
-
-    newItem.parentId = currentParent.index; // Set parentId correctly
-    items[newItem.index] = newItem;
-
-    if (parsedLine.depth >= parentsStack.length) {
-      parentsStack.push(newItem);
-    } else {
-      parentsStack[parsedLine.depth + 1] = newItem;
-    }
-  });
-
-  return items;
-};
-
-const ParseText = ({ text, onChange }) => {
+export default function ParseText({ text, onChange }) {
   const [generatedItems, setGeneratedItems] = useState(null);
   const [dataProvider, setDataProvider] = useState(null);
   const [collapsedCount, setCollapsedCount] = useState(0);
@@ -141,12 +52,6 @@ const ParseText = ({ text, onChange }) => {
 
   function onItemChanged() {
     let text = "";
-
-    console.log(environmentRef.current);
-    // console.log(
-    //   environmentRef.current.linearItems.tree.map((treeNode) => treeNode.item),
-    // );
-
     environmentRef.current.linearItems.tree.forEach((treeNode) => {
       const currentNode = dataProvider.data.items[treeNode.item];
       text += `${"-".repeat(treeNode.depth)}${currentNode.data.caption}`;
@@ -220,6 +125,11 @@ const ParseText = ({ text, onChange }) => {
       </div>
     </React.Fragment>
   );
-};
+}
 
-export default ParseText;
+const formatErrorMessage = (lineNumber, message, lineText) => (
+  <div>
+    <div className="error-message">{message}</div>
+    line {lineNumber}: <code>{lineText}</code>
+  </div>
+);

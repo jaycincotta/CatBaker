@@ -1,23 +1,26 @@
-import React, { useState, useEffect, useContext } from "react";
-import ParseText from "./ParseText";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import useLoadTextFile from "../useLoadTextFile";
-import "./styles.css";
 import AppContext from "../Context/AppContext";
+import ControlledTreeEditor from "./ControlledTreeEditor";
+import "./styles.css";
 
-const Tester = () => {
+export default function CategoryBuilder() {
   const { setTreeText, version } = useContext(AppContext);
   const defaultText = useLoadTextFile("/sampleText.txt");
   const [inputText, setInputText] = useState(
     version ? version.TreeData : defaultText,
   );
+  const inputRef = useRef();
 
   useEffect(() => {
     if (version) {
       setInputText(version.TreeData);
       setTreeText(version.TreeData);
+      inputRef.current.value = version.TreeData;
     } else {
       setInputText(defaultText);
       setTreeText(defaultText);
+      inputRef.current.value = defaultText;
     }
   }, [defaultText, version]);
 
@@ -27,6 +30,9 @@ const Tester = () => {
   };
 
   const handleTreeChange = (text) => {
+    if (text.trim() === inputRef.current.value.trim()) {
+      return;
+    }
     setInputText(text);
     setTreeText(text);
   };
@@ -35,17 +41,18 @@ const Tester = () => {
     <div className="container">
       <div className="input-section">
         <textarea
+          ref={inputRef}
+          spellCheck="false"
           value={inputText}
           onChange={handleInputChange}
+          onPaste={handleInputChange}
           placeholder="Enter text here"
           style={{ resize: "none" }} // Disable resizing
         />
       </div>
       {!!inputText && (
-        <ParseText text={inputText} onChange={handleTreeChange} />
+        <ControlledTreeEditor text={inputText} onChange={handleTreeChange} />
       )}
     </div>
   );
-};
-
-export default Tester;
+}
