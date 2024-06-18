@@ -1,5 +1,5 @@
 import "./styles.css";
-import CatBaker from "./assets/CatBaker.png";
+import CatBaker from "./assets/CatBaker-horiz.png";
 import UserProfile from "./Login/UserProfile";
 import AppProvider from "./Context/AppProvider";
 import Navigation from "./Navigation";
@@ -13,7 +13,7 @@ export default function App() {
           <img
             src={CatBaker}
             alt="Cat Baker"
-            style={{ width: "128px", height: "128px" }}
+            style={{ width: "192px", height: "64px" }}
           />
           <Navigation />
           <UserProfile />

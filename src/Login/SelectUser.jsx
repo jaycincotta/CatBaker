@@ -25,9 +25,25 @@ export default function SelectUser() {
 
   return (
     <div className="select-user">
-      <i onClick={handleLogout} className="fa-solid fa-person-to-door"></i>
+      <i onClick={handleLogout} className="fa-solid fa-circle-xmark"></i>
       <dialog ref={dialogRef} className="login-modal">
-        <h1>Login</h1>
+        <h1>Welcome Team!</h1>
+        <h4>Click your AVATAR to begin. How to use this tool:</h4>
+        <p>
+          <ol>
+            <li>
+              Edit text in LEFT column (adding a hyphen '-' prefix creates a
+              Child)
+            </li>
+            <li>
+              Check that total line length of text fits within the RIGHT column
+            </li>
+            <li>
+              When done editing, SAVE changes by clicking the orange disk icon
+            </li>
+            <li>To EXIT (without saving changes), click the black 'X' icon</li>
+          </ol>
+        </p>
         <ul className="users">
           {users.map((user) => (
             <li key={user.UserId} onClick={() => handleUserClick(user)}>
@@ -35,9 +51,8 @@ export default function SelectUser() {
             </li>
           ))}
         </ul>
-        <div className="App-title">
-          We're cooking up the successor to CatMaker!
-        </div>
+
+        <div className="App-title"></div>
       </dialog>
     </div>
   );

@@ -1,11 +1,36 @@
 .select-user > i {
-  font-size: 2rem;
-  margin-bottom: 8px;
-  color: #1c357b;
+  font-size: 1.5rem;
+  margin-bottom: 24px;
+  color: #000000;
 }
 
 .login-modal h1 {
-  margin-top: 0;
+  margin: 16px 16px 8px 16px;
+  line-height: 2rem;
+}
+
+.login-modal h4 {
+  color: #1380b1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin: 0 16px 16px 16px;
+}
+
+.login-modal p {
+  font-size: 0.75rem;
+  font-weight: normal;
+  margin: 0 16px 16px 16px;
+}
+
+.login-modal ol li {
+  font-size: 0.75rem;
+  font-weight: normal;
+  margin: 0 16px 8px -24px;
+}
+
+.login-modal ul {
+  font-size: 0.75rem;
+  margin: 0 16px 32px 16px;
 }
 
 .users {
@@ -13,29 +38,41 @@
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
+  gap: 16px;
+  margin: 16px;
   padding: 0;
-  margin-bottom: 16px;
+  padding-top: 16px;
   box-sizing: border-box;
 }
 
 .users > li {
   margin-right: 8px;
   list-style: none;
-  height: 80px;
-  width: 80px;
+  height: 48px;
+  width: 48px;
 }
 
 .users img {
-  height: 80px;
-  width: 80px;
+  height: 48px;
+  width: 48px;
   cursor: pointer;
+  border: 2px solid #dfdfdf;
   border-radius: 50%;
 }
 
 .user-profile > img {
-  height: 60px;
-  width: 60px;
+  width: 32px;
+  height: 32px;
+  margin-top: 16px;
   border-radius: 50%;
+}
+
+.login-modal {
+  width: 480px;
+  border: 1px solid #dfdfdf;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.25);
+  background-color: #ffffff;
+  padding: 16px;
+  box-sizing: border-box;
 }
