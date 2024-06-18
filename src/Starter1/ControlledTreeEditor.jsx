@@ -202,13 +202,13 @@ export default function ControlledTreeEditor({ text, onChange }) {
               return item.children && item.children.length > 0 ? (
                 <span {...context.arrowProps}>
                   {context.isExpanded ? (
-                    <i className="fa-regular fa-folder tree-item-arrow"></i>
+                    <i className="fa-solid fa-minus tree-item-arrow"></i>
                   ) : (
-                    <i className="fa-regular fa-folder-closed tree-item-arrow"></i>
+                    <i className="fa-solid fa-plus tree-item-arrow"></i>
                   )}
                 </span>
               ) : (
-                <i className="fa-regular fa-file tree-item-arrow"></i>
+                <i className="fa-regular fa-chevron-right tree-item-arrow"></i>
               );
             }}
             renderItem={({ title, arrow, depth, context, children: item }) => {
@@ -251,6 +251,7 @@ export default function ControlledTreeEditor({ text, onChange }) {
             onClick={onUnlockDragAndDrop}
           />
           <Save />
+          <i className="info fa-regular fa-circle-info"></i>
         </div>
         <SelectUser />
       </div>
