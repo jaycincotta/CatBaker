@@ -19,15 +19,21 @@ html {
 .App-title {
   margin: auto auto;
   text-align: center;
-  font-family: "Arial, sans-serif;
+  font-family: "Arial, sans-serif";
   font-style: italic;
   font-weight: 100;
   font-size: 1.6rem;
   margin-top: 24px;
 }
 
+.App-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+}
+
 .App-lock {
-  float: right;
   font-size: 1.5rem;
   margin-top: 1rem;
   cursor: pointer;
@@ -134,7 +140,7 @@ html {
   cursor: pointer;
 }
 
-.save-enabled {
+.save-disabled {
   color: #b2b2b2;
   cursor: default;
 }
@@ -148,7 +154,6 @@ dialog {
   max-width: 640px;
   cursor: default;
 }
-
 
 .info button {
   width: 120px;
@@ -169,4 +174,19 @@ dialog {
 .info {
   font-size: 1.5rem;
   color: #bababa;
+}
+
+.toolbar {
+  display: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 16px;
+  cursor: pointer;
+  box-sizing: border-box;
+  width: fit-content;
+}
+
+.toolbar > * {
+  margin-bottom: 32px;
 }

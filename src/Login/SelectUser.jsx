@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef } from "react";
 import AppContext from "../Context/AppContext";
 import "./styles.css";
+import { HelpContent } from "../Help";
 
 export default function SelectUser() {
   const dialogRef = useRef();
@@ -29,21 +30,7 @@ export default function SelectUser() {
       <dialog ref={dialogRef} className="login-modal">
         <h1>Welcome Team!</h1>
         <h4>Click your AVATAR to begin. How to use this tool:</h4>
-        <p>
-          <ol>
-            <li>
-              Edit text in LEFT column (adding a hyphen '-' prefix creates a
-              Child)
-            </li>
-            <li>
-              Check that total line length of text fits within the RIGHT column
-            </li>
-            <li>
-              When done editing, SAVE changes by clicking the orange disk icon
-            </li>
-            <li>To EXIT (without saving changes), click the black 'X' icon</li>
-          </ol>
-        </p>
+        <HelpContent />
         <ul className="users">
           {users.map((user) => (
             <li key={user.UserId} onClick={() => handleUserClick(user)}>

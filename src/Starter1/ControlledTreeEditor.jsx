@@ -1,21 +1,33 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useContext,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { Tree, ControlledTreeEnvironment } from "react-complex-tree";
 import { validateLines, buildTreeData } from "../TextParser";
-import AppLock from "../AppLock";
-import SelectUser from "../Login/SelectUser";
-import Save from "../Save";
-import "react-complex-tree/lib/style-modern.css";
-import "./styles.css";
 import ErrorMessage from "../ErrorMessage";
+import "react-complex-tree/lib/style-modern.css";
+import AppContext from "../Context/AppContext";
+import "./styles.css";
 
-export default function ControlledTreeEditor({ text, onChange }) {
+const ControlledTreeEditor = forwardRef(({ text, onChange }, ref) => {
   const environmentRef = useRef();
-  const [collapsedCount, setCollapsedCount] = useState(0);
   const [items, setItems] = useState();
   const [focusedItem, setFocusedItem] = useState();
   const [expandedItems, setExpandedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [error, setError] = useState();
+  const { collapsedCount, setCollapsedCount } = useContext(AppContext);
+
+  useImperativeHandle(ref, () => ({
+    unlockDragAndDrop() {
+      setCollapsedCount(0);
+      setExpandedItems(Object.keys(items));
+    },
+  }));
 
   useEffect(() => {
     const lines = text
@@ -72,11 +84,6 @@ export default function ControlledTreeEditor({ text, onChange }) {
     );
     if (item.children.length === 0) return;
     setCollapsedCount((count) => count + 1);
-  }
-
-  function onUnlockDragAndDrop() {
-    setCollapsedCount(0);
-    setExpandedItems(Object.keys(items));
   }
 
   const onItemsDropped = (items, target) => {
@@ -244,20 +251,11 @@ export default function ControlledTreeEditor({ text, onChange }) {
           </ControlledTreeEnvironment>
         </div>
       )}
-      <div className="toolbar">
-        <div className="toolbar-top">
-          <AppLock
-            isLocked={collapsedCount > 0}
-            onClick={onUnlockDragAndDrop}
-          />
-          <Save />
-          <i className="info fa-regular fa-circle-info"></i>
-        </div>
-        <SelectUser />
-      </div>
     </React.Fragment>
   );
-}
+});
+
+export default ControlledTreeEditor;
 
 ({ context, info, item, title }) => {
   // console.log(context);

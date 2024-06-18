@@ -11,6 +11,7 @@ export default function AppProvider({ children }) {
   const [latestVersionId, setLatestVersionId] = useState(0);
   const [treeText, setTreeText] = useState("");
   const [isDirty, setIsDirty] = useState();
+  const [collapsedCount, setCollapsedCount] = useState(0);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -108,6 +109,8 @@ export default function AppProvider({ children }) {
     setTreeText: manageTreeTextUpdate,
     treeText: treeText,
     isDirty: isDirty,
+    collapsedCount: collapsedCount,
+    setCollapsedCount: setCollapsedCount,
   };
 
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;

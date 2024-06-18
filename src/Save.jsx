@@ -7,7 +7,7 @@ export default function Save() {
   const dialogRef = useRef();
   const remarkRef = useRef();
 
-  const enabled = version !== latestVersionId || isDirty;
+  const enabled = version.Id !== latestVersionId || isDirty;
   const enabledClassName = enabled ? "save-enabled" : "save-disabled";
 
   function handleSaveIconClick() {

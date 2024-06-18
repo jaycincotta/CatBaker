@@ -4,7 +4,7 @@ import AppContext from "../Context/AppContext";
 import ControlledTreeEditor from "./ControlledTreeEditor";
 import "./styles.css";
 
-export default function CategoryBuilder() {
+export default function CategoryBuilder({ treeEditorRef }) {
   const { setTreeText, version } = useContext(AppContext);
   const defaultText = useLoadTextFile("/sampleText.txt");
   const [inputText, setInputText] = useState(
@@ -51,7 +51,11 @@ export default function CategoryBuilder() {
         />
       </div>
       {!!inputText && (
-        <ControlledTreeEditor text={inputText} onChange={handleTreeChange} />
+        <ControlledTreeEditor
+          text={inputText}
+          onChange={handleTreeChange}
+          ref={treeEditorRef}
+        />
       )}
     </div>
   );
