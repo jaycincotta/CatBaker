@@ -41,23 +41,6 @@ export default function ControlledTreeEditor({ text, onChange }) {
     buildItemsText(items);
   }, [items]);
 
-  const onRenameItem = (item, name) => {
-    setItems((prevItems) => {
-      const updatedItems = {
-        ...prevItems,
-        [item.index]: {
-          ...prevItems[item.index],
-          data: {
-            ...prevItems[item.index].data,
-            caption: name,
-          },
-        },
-      };
-      buildItemsText(updatedItems);
-      return updatedItems;
-    });
-  };
-
   function buildItemsText(itemsObject) {
     let text = "";
 
@@ -156,66 +139,21 @@ export default function ControlledTreeEditor({ text, onChange }) {
     }
   };
 
-  const renderItemTitle = ({ item, context }) => {
-    const [isRenaming, setIsRenaming] = useState(false);
-    const [newName, setNewName] = useState(item.data.caption);
-
-    console.log(context.isRenaming);
-
-    useEffect(() => {
-      setNewName(item.data.caption);
-    }, [item.data.caption]);
-
-    useEffect(() => {
-      const handleKeyDown = (e) => {
-        if (e.key === "F2" && context.isRenaming) {
-          setIsRenaming(true);
-          context.startRenaming();
-        }
+  const onRenameItem = (item, name) => {
+    setItems((prevItems) => {
+      const updatedItems = {
+        ...prevItems,
+        [item.index]: {
+          ...prevItems[item.index],
+          data: {
+            ...prevItems[item.index].data,
+            caption: name,
+          },
+        },
       };
-
-      document.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown);
-      };
-    }, [isRenaming]);
-
-    useEffect(() => {
-      if (isRenaming && inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, []);
-
-    useEffect(() => {
-      setNewName(item.data.caption);
-    }, [item.data.caption]);
-
-    const handleRename = () => {
-      handleRenameItem(item.index, newName);
-      setIsRenaming(false);
-      context.stopRenaming();
-    };
-
-    return (
-      <div>
-        {context.isRenaming && isRenaming ? (
-          <input
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            onBlur={handleRename}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleRename();
-              }
-            }}
-            autoFocus
-          />
-        ) : (
-          <span>{item.data.caption}</span>
-        )}
-      </div>
-    );
+      buildItemsText(updatedItems);
+      return updatedItems;
+    });
   };
 
   return (
@@ -246,7 +184,6 @@ export default function ControlledTreeEditor({ text, onChange }) {
             }}
             onFocusItem={(item) => setFocusedItem(item.index)}
             onSelectItems={(items) => setSelectedItems(items)}
-            // renderItemTitle={renderItemTitle}
             renderItemArrow={({ item, context }) => {
               // console.log(item);
               return item.children && item.children.length > 0 ? (
@@ -262,27 +199,31 @@ export default function ControlledTreeEditor({ text, onChange }) {
               );
             }}
             renderItem={({ title, arrow, depth, context, children: item }) => {
-              // console.log(context);
+              const InteractiveComponent = context.isRenaming
+                ? "div"
+                : "button";
               return (
-                <li
-                  {...context.itemContainerWithChildrenProps}
-                  className="tree-item-container"
-                >
-                  <button
-                    {...context.itemContainerWithoutChildrenProps}
-                    {...context.interactiveElementProps}
-                    className={
-                      context.isSelected
-                        ? "tree-item tree-item-focused"
-                        : "tree-item"
-                    }
-                    style={{ marginLeft: depth * 20 + "px" }}
+                <React.Fragment>
+                  <li
+                    {...context.itemContainerWithChildrenProps}
+                    className="tree-item-container"
                   >
-                    {arrow}
-                    {title}
-                  </button>
+                    <InteractiveComponent
+                      {...context.itemContainerWithoutChildrenProps}
+                      {...context.interactiveElementProps}
+                      className={
+                        context.isSelected
+                          ? "tree-item tree-item-focused"
+                          : "tree-item"
+                      }
+                      style={{ marginLeft: depth * 20 + "px" }}
+                    >
+                      {arrow}
+                      {title}
+                    </InteractiveComponent>
+                  </li>
                   {item}
-                </li>
+                </React.Fragment>
               );
             }}
           >
