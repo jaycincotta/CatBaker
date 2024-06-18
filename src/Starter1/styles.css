@@ -106,7 +106,6 @@ textarea {
   flex-direction: column;
   justify-content: space-between;
   flex-grow: 1;
-  cursor: pointer;
   box-sizing: border-box;
 }
 

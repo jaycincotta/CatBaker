@@ -6,6 +6,7 @@ import SelectUser from "../Login/SelectUser";
 import Save from "../Save";
 import "react-complex-tree/lib/style-modern.css";
 import "./styles.css";
+import ErrorMessage from "../ErrorMessage";
 
 export default function ControlledTreeEditor({ text, onChange }) {
   const environmentRef = useRef();
@@ -156,9 +157,21 @@ export default function ControlledTreeEditor({ text, onChange }) {
     });
   };
 
+  const Error = () => (
+    <React.Fragment>
+      Error on line: {error.lineNumber} "{error.lineText}"
+      <br />
+      {error.message}
+    </React.Fragment>
+  );
+
   return (
     <React.Fragment>
-      {error && <ErrorMessage error={error} />}
+      {error && (
+        <ErrorMessage>
+          <Error />
+        </ErrorMessage>
+      )}
       {!items && !error && <div>Loading...</div>}
       {items && !error && (
         <div className="output-section">
@@ -242,19 +255,6 @@ export default function ControlledTreeEditor({ text, onChange }) {
         <SelectUser />
       </div>
     </React.Fragment>
-  );
-}
-
-function ErrorMessage({ error }) {
-  return (
-    <div className="error">
-      <i className="fa fa-exclamation-triangle" />
-      <p>
-        Error on line: {error.lineNumber} "{error.lineText}"
-        <br />
-        {error.message}
-      </p>
-    </div>
   );
 }
 

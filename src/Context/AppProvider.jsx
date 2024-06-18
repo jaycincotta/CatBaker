@@ -10,6 +10,7 @@ export default function AppProvider({ children }) {
   const [version, setVersion] = useState();
   const [latestVersionId, setLatestVersionId] = useState(0);
   const [treeText, setTreeText] = useState("");
+  const [isDirty, setIsDirty] = useState();
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -56,6 +57,8 @@ export default function AppProvider({ children }) {
         const user = Users.find((user) => user.UserId == data.UserId);
         data.SlackImg = user?.SlackImg;
         setVersion(data);
+        setIsDirty(false);
+        setTreeText("");
       })
       .catch((error) => console.log(error));
   }
@@ -86,6 +89,13 @@ export default function AppProvider({ children }) {
       });
   }
 
+  function manageTreeTextUpdate(text) {
+    if (treeText && treeText !== text) {
+      setIsDirty(true);
+    }
+    setTreeText(text);
+  }
+
   const context = {
     login: login,
     logout: logout,
@@ -95,8 +105,9 @@ export default function AppProvider({ children }) {
     saveVersion: saveVersion,
     version: version,
     latestVersionId: latestVersionId,
-    setTreeText: setTreeText,
+    setTreeText: manageTreeTextUpdate,
     treeText: treeText,
+    isDirty: isDirty,
   };
 
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;

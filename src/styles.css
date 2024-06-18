@@ -114,7 +114,16 @@ html {
 
 .save i {
   font-size: 1.5rem;
+}
+
+.save-enabled {
   color: #f06721;
+  cursor: pointer;
+}
+
+.save-enabled {
+  color: #b2b2b2;
+  cursor: default;
 }
 
 dialog {
@@ -125,4 +134,8 @@ dialog {
   border-radius: 0px;
   max-width: 640px;
   cursor: default;
+}
+
+.save-error {
+  background-color:;
 }

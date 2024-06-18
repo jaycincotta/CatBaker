@@ -19,7 +19,7 @@ export default function CategoryBuilder() {
       inputRef.current.value = version.TreeData;
     } else {
       setInputText(defaultText);
-      setTreeText(defaultText);
+      // setTreeText(defaultText);
       inputRef.current.value = defaultText;
     }
   }, [defaultText, version]);
