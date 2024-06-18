@@ -262,27 +262,31 @@ export default function ControlledTreeEditor({ text, onChange }) {
               );
             }}
             renderItem={({ title, arrow, depth, context, children: item }) => {
-              // console.log(context);
+              const InteractiveComponent = context.isRenaming
+                ? "div"
+                : "button";
               return (
-                <li
-                  {...context.itemContainerWithChildrenProps}
-                  className="tree-item-container"
-                >
-                  <button
-                    {...context.itemContainerWithoutChildrenProps}
-                    {...context.interactiveElementProps}
-                    className={
-                      context.isSelected
-                        ? "tree-item tree-item-focused"
-                        : "tree-item"
-                    }
-                    style={{ marginLeft: depth * 20 + "px" }}
+                <React.Fragment>
+                  <li
+                    {...context.itemContainerWithChildrenProps}
+                    className="tree-item-container"
                   >
-                    {arrow}
-                    {title}
-                  </button>
+                    <InteractiveComponent
+                      {...context.itemContainerWithoutChildrenProps}
+                      {...context.interactiveElementProps}
+                      className={
+                        context.isSelected
+                          ? "tree-item tree-item-focused"
+                          : "tree-item"
+                      }
+                      style={{ marginLeft: depth * 20 + "px" }}
+                    >
+                      {arrow}
+                      {title}
+                    </InteractiveComponent>
+                  </li>
                   {item}
-                </li>
+                </React.Fragment>
               );
             }}
           >
