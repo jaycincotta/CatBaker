@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import "./styles.css";
+import AppContext from "./Context/AppContext";
 
-const AppLock = ({ isLocked, onClick }) => {
+const AppLock = ({ onClick }) => {
+  const { collapsedCount } = useContext(AppContext);
+  const isLocked = collapsedCount > 0;
   return (
     <div
       className={`App-lock ${isLocked ? "locked" : "unlocked"}`}

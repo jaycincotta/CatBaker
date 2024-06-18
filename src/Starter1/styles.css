@@ -1,5 +1,6 @@
 .container {
   display: flex;
+  width: 100%;
 }
 
 .input-section {
@@ -67,7 +68,6 @@ textarea {
 
 .tree-container {
   max-height: 500px;
-  oveflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -117,25 +117,4 @@ textarea {
 
 .tree-item p {
   margin: 0 8px;
-}
-
-.toolbar {
-  display: flex-start;
-  flex-direction: column;
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
-  padding-top: 16px;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-.toolbar-top {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.toolbar-top > * {
-  margin-bottom: 32px;
 }
