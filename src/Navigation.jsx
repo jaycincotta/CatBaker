@@ -2,29 +2,29 @@ import React, { useContext } from "react";
 import AppContext from "./Context/AppContext";
 import "./styles.css";
 
-export default function Navigation() {
-  const { fetchVersion, version, latestVersionId } = useContext(AppContext);
+export default function Navigation({ onNavigate }) {
+  const { version, latestVersionId } = useContext(AppContext);
 
   return (
     latestVersionId > 0 && (
       <div className="navigation">
         <i
-          onClick={() => fetchVersion(1)}
+          onClick={() => onNavigate(1)}
           className="fa-solid fa-backward-step"
         ></i>
         <i
-          onClick={() => fetchVersion(version.Id - 1)}
-          className="fa-solid fa-circle-caret-left"
+          onClick={() => onNavigate(version.Id - 1)}
+          className="fa-solid fa-caret-left"
         ></i>
         <p>
           {version?.Id}/{latestVersionId}
         </p>
         <i
-          onClick={() => fetchVersion(version.Id + 1)}
-          className="fa-solid fa-circle-caret-right"
+          onClick={() => onNavigate(version.Id + 1)}
+          className="fa-solid fa-caret-right"
         ></i>
         <i
-          onClick={() => fetchVersion()}
+          onClick={() => onNavigate()}
           className="fa-solid fa-forward-step"
         ></i>
         <div className="version-remark">

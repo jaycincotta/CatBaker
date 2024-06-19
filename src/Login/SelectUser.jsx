@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef } from "react";
 import AppContext from "../Context/AppContext";
 import "./styles.css";
+import { HelpContent } from "../Help";
 
 export default function SelectUser() {
   const dialogRef = useRef();
@@ -25,9 +26,11 @@ export default function SelectUser() {
 
   return (
     <div className="select-user">
-      <i onClick={handleLogout} className="fa-solid fa-person-to-door"></i>
+      <i onClick={handleLogout} className="fa-solid fa-circle-xmark"></i>
       <dialog ref={dialogRef} className="login-modal">
-        <h1>Login</h1>
+        <h1>Welcome Team!</h1>
+        <h4>Click your AVATAR to begin. How to use this tool:</h4>
+        <HelpContent />
         <ul className="users">
           {users.map((user) => (
             <li key={user.UserId} onClick={() => handleUserClick(user)}>
@@ -35,9 +38,8 @@ export default function SelectUser() {
             </li>
           ))}
         </ul>
-        <div className="App-title">
-          We're cooking up the successor to CatMaker!
-        </div>
+
+        <div className="App-title"></div>
       </dialog>
     </div>
   );

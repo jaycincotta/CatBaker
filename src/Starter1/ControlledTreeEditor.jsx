@@ -1,20 +1,33 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useContext,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { Tree, ControlledTreeEnvironment } from "react-complex-tree";
 import { validateLines, buildTreeData } from "../TextParser";
-import AppLock from "../AppLock";
-import SelectUser from "../Login/SelectUser";
-import Save from "../Save";
+import ErrorMessage from "../ErrorMessage";
 import "react-complex-tree/lib/style-modern.css";
+import AppContext from "../Context/AppContext";
 import "./styles.css";
 
-export default function ControlledTreeEditor({ text, onChange }) {
+const ControlledTreeEditor = forwardRef(({ text, onChange }, ref) => {
   const environmentRef = useRef();
-  const [collapsedCount, setCollapsedCount] = useState(0);
   const [items, setItems] = useState();
   const [focusedItem, setFocusedItem] = useState();
   const [expandedItems, setExpandedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [error, setError] = useState();
+  const { collapsedCount, setCollapsedCount } = useContext(AppContext);
+
+  useImperativeHandle(ref, () => ({
+    unlockDragAndDrop() {
+      setCollapsedCount(0);
+      setExpandedItems(Object.keys(items));
+    },
+  }));
 
   useEffect(() => {
     const lines = text
@@ -40,23 +53,6 @@ export default function ControlledTreeEditor({ text, onChange }) {
 
     buildItemsText(items);
   }, [items]);
-
-  const onRenameItem = (item, name) => {
-    setItems((prevItems) => {
-      const updatedItems = {
-        ...prevItems,
-        [item.index]: {
-          ...prevItems[item.index],
-          data: {
-            ...prevItems[item.index].data,
-            caption: name,
-          },
-        },
-      };
-      buildItemsText(updatedItems);
-      return updatedItems;
-    });
-  };
 
   function buildItemsText(itemsObject) {
     let text = "";
@@ -88,11 +84,6 @@ export default function ControlledTreeEditor({ text, onChange }) {
     );
     if (item.children.length === 0) return;
     setCollapsedCount((count) => count + 1);
-  }
-
-  function onUnlockDragAndDrop() {
-    setCollapsedCount(0);
-    setExpandedItems(Object.keys(items));
   }
 
   const onItemsDropped = (items, target) => {
@@ -156,71 +147,38 @@ export default function ControlledTreeEditor({ text, onChange }) {
     }
   };
 
-  const renderItemTitle = ({ item, context }) => {
-    const [isRenaming, setIsRenaming] = useState(false);
-    const [newName, setNewName] = useState(item.data.caption);
-
-    console.log(context.isRenaming);
-
-    useEffect(() => {
-      setNewName(item.data.caption);
-    }, [item.data.caption]);
-
-    useEffect(() => {
-      const handleKeyDown = (e) => {
-        if (e.key === "F2" && context.isRenaming) {
-          setIsRenaming(true);
-          context.startRenaming();
-        }
+  const onRenameItem = (item, name) => {
+    setItems((prevItems) => {
+      const updatedItems = {
+        ...prevItems,
+        [item.index]: {
+          ...prevItems[item.index],
+          data: {
+            ...prevItems[item.index].data,
+            caption: name,
+          },
+        },
       };
-
-      document.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown);
-      };
-    }, [isRenaming]);
-
-    useEffect(() => {
-      if (isRenaming && inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, []);
-
-    useEffect(() => {
-      setNewName(item.data.caption);
-    }, [item.data.caption]);
-
-    const handleRename = () => {
-      handleRenameItem(item.index, newName);
-      setIsRenaming(false);
-      context.stopRenaming();
-    };
-
-    return (
-      <div>
-        {context.isRenaming && isRenaming ? (
-          <input
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            onBlur={handleRename}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleRename();
-              }
-            }}
-            autoFocus
-          />
-        ) : (
-          <span>{item.data.caption}</span>
-        )}
-      </div>
-    );
+      buildItemsText(updatedItems);
+      return updatedItems;
+    });
   };
+
+  const Error = () => (
+    <React.Fragment>
+      Error on line: {error.lineNumber} "{error.lineText}"
+      <br />
+      {error.message}
+    </React.Fragment>
+  );
 
   return (
     <React.Fragment>
-      {error && <ErrorMessage error={error} />}
+      {error && (
+        <ErrorMessage>
+          <Error />
+        </ErrorMessage>
+      )}
       {!items && !error && <div>Loading...</div>}
       {items && !error && (
         <div className="output-section">
@@ -246,43 +204,46 @@ export default function ControlledTreeEditor({ text, onChange }) {
             }}
             onFocusItem={(item) => setFocusedItem(item.index)}
             onSelectItems={(items) => setSelectedItems(items)}
-            // renderItemTitle={renderItemTitle}
             renderItemArrow={({ item, context }) => {
               // console.log(item);
               return item.children && item.children.length > 0 ? (
                 <span {...context.arrowProps}>
                   {context.isExpanded ? (
-                    <i className="fa-regular fa-folder tree-item-arrow"></i>
+                    <i className="fa-solid fa-minus tree-item-arrow"></i>
                   ) : (
-                    <i className="fa-regular fa-folder-closed tree-item-arrow"></i>
+                    <i className="fa-solid fa-plus tree-item-arrow"></i>
                   )}
                 </span>
               ) : (
-                <i className="fa-regular fa-file tree-item-arrow"></i>
+                <i className="fa-regular fa-chevron-right tree-item-arrow"></i>
               );
             }}
             renderItem={({ title, arrow, depth, context, children: item }) => {
-              // console.log(context);
+              const InteractiveComponent = context.isRenaming
+                ? "div"
+                : "button";
               return (
-                <li
-                  {...context.itemContainerWithChildrenProps}
-                  className="tree-item-container"
-                >
-                  <button
-                    {...context.itemContainerWithoutChildrenProps}
-                    {...context.interactiveElementProps}
-                    className={
-                      context.isSelected
-                        ? "tree-item tree-item-focused"
-                        : "tree-item"
-                    }
-                    style={{ marginLeft: depth * 20 + "px" }}
+                <React.Fragment>
+                  <li
+                    {...context.itemContainerWithChildrenProps}
+                    className="tree-item-container"
                   >
-                    {arrow}
-                    {title}
-                  </button>
+                    <InteractiveComponent
+                      {...context.itemContainerWithoutChildrenProps}
+                      {...context.interactiveElementProps}
+                      className={
+                        context.isSelected
+                          ? "tree-item tree-item-focused"
+                          : "tree-item"
+                      }
+                      style={{ marginLeft: depth * 20 + "px" }}
+                    >
+                      {arrow}
+                      {title}
+                    </InteractiveComponent>
+                  </li>
                   {item}
-                </li>
+                </React.Fragment>
               );
             }}
           >
@@ -290,32 +251,11 @@ export default function ControlledTreeEditor({ text, onChange }) {
           </ControlledTreeEnvironment>
         </div>
       )}
-      <div className="toolbar">
-        <div className="toolbar-top">
-          <AppLock
-            isLocked={collapsedCount > 0}
-            onClick={onUnlockDragAndDrop}
-          />
-          <Save />
-        </div>
-        <SelectUser />
-      </div>
     </React.Fragment>
   );
-}
+});
 
-function ErrorMessage({ error }) {
-  return (
-    <div className="error">
-      <i className="fa fa-exclamation-triangle" />
-      <p>
-        Error on line: {error.lineNumber} "{error.lineText}"
-        <br />
-        {error.message}
-      </p>
-    </div>
-  );
-}
+export default ControlledTreeEditor;
 
 ({ context, info, item, title }) => {
   // console.log(context);

@@ -3,7 +3,7 @@ html {
 }
 
 .App {
-  font-family: sans-serif;
+  font-family: Arial, sans-serif;
   text-align: left;
   margin: 1rem 1rem;
 }
@@ -19,16 +19,23 @@ html {
 .App-title {
   margin: auto auto;
   text-align: center;
-  font-family: "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-family: "Arial, sans-serif";
   font-style: italic;
   font-weight: 100;
   font-size: 1.6rem;
   margin-top: 24px;
 }
 
+.App-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+}
+
 .App-lock {
-  float: right;
   font-size: 1.5rem;
+  margin-top: 1rem;
   cursor: pointer;
 }
 
@@ -40,24 +47,30 @@ html {
   color: #1380b1;
 }
 
+.App-lock.unlocked:hover {
+  color: #116e99;
+}
+
 .navigation {
   display: flex;
   flex-direction: row;
   align-items: center;
   align-self: flex-end;
-  width: 640px;
+  width: 100%;
+  margin-left: 2rem;
+  margin-bottom: 0.75rem;
 }
 
 .navigation p {
   margin: 0;
   padding: 0;
-  margin-right: 8px;
+  color: #000000;
 }
 
 .navigation i {
   font-size: 1.5rem;
-  margin-right: 1rem;
-  margin-left: 1rem;
+  margin-right: 0.75rem;
+  margin-left: 0.75rem;
   cursor: pointer;
   color: #000000;
 }
@@ -85,7 +98,8 @@ html {
   border-style: solid;
   border-width: 2px;
   border-color: #dfdfdf;
-  margin-right: 12px;
+  margin-right: 0.75rem;
+  margin-left: 1rem;
 }
 
 .version-remark span {
@@ -93,36 +107,168 @@ html {
   color: #1380b1;
 }
 
+.save h2 {
+  margin: 1rem 1rem;
+  padding: 0;
+  line-height: 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #000000;
+}
+
+.save p {
+  margin: 1rem 1rem;
+  padding: 0;
+  line-height: 1.5rem;
+  font-size: 0.75rem;
+  color: #000000;
+}
+
 .save textarea {
-  width: 100%;
+  width: 92.5%;
   height: 120px;
-  margin: 0;
-  padding: 8px;
+  margin: 0 1rem 0.5rem 1rem;
+  padding: 16px;
+  border: 1px solid #bababa;
+  border-radius: 2px;
   resize: none;
 }
 
-.save button {
+.save-btn {
+  width: 120px;
+  height: 32px;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 0.75rem;
+  background-color: #f06721;
+  border: 1px solid #f06721;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 1rem 0 1rem 1rem;
+}
+
+.save-btn:hover {
+  background-color: #e85910;
+  border-color: f06721;
+  color: #ffffff;
+  box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.25);
+}
+
+.cancel-btn {
+  width: 120px;
+  height: 32px;
+  font-weight: bold;
+  font-size: 0.75rem;
+  color: #bababa;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 1rem;
+}
+
+.cancel-btn:hover {
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  color: #1380b1;
+}
+
+.save i {
+  font-size: 1.5rem;
+}
+
+.save-enabled {
+  color: #f06721;
+  cursor: pointer;
+}
+
+.save-disabled {
+  color: #b2b2b2;
+  cursor: default;
+}
+
+dialog {
+  border: thin solid #dfdfdf;
+  outline: none;
+  padding: 16px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.25);
+  max-width: 480px;
+  cursor: default;
+}
+
+dialog h2 {
+  margin: 0 1rem 1rem 1rem;
+  padding: 0;
+  line-height: 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1380b1;
+}
+
+dialog h4 {
+  margin: 0 0 16px 20px;
+  padding: 0;
+  line-height: 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1380b1;
+}
+
+dialog ol,
+dialog li {
+  margin: 0 16px 16px 16px;
+  padding: 0;
+  line-height: 1rem;
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: #000000;
+}
+
+.info button {
   width: 120px;
   height: 30px;
   background-color: #ffffff;
-  border: 1px solid #f06721;
+  border: 1px solid #dfdfdf;
   border-radius: 4px;
   cursor: pointer;
   margin-top: 16px;
   margin-right: 16px;
 }
 
-.save i {
-  font-size: 1.5rem;
-  color: #f06721;
+.info button:hover {
+  background-color: #000000;
+  color: #ffffff;
 }
 
-dialog {
-  border: 1px solid #707070;
-  outline: none;
-  padding: 16px;
+.info {
+  font-size: 1.5rem;
+  color: #bababa;
+}
+
+.toolbar {
+  display: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 16px;
+  cursor: pointer;
   box-sizing: border-box;
-  border-radius: 0px;
-  max-width: 640px;
-  cursor: default;
+  width: fit-content;
+}
+
+.toolbar > * {
+  margin-bottom: 32px;
+}
+
+.x-close {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  align-self: right;
+  font-size: 1.5rem;
+  margin-right: 0.25rem;
+  cursor: pointer;
+  color: #000000;
 }
