@@ -206,8 +206,8 @@ const ControlledTreeEditor = forwardRef(({ text, onChange }, ref) => {
             }}
             onFocusItem={(item) => setFocusedItem(item.index)}
             onSelectItems={(items) => setSelectedItems(items)}
+            renderItemTitle={({ title }) => <p>{title}</p>}
             renderItemArrow={({ item, context }) => {
-              // console.log(item);
               return item.children && item.children.length > 0 ? (
                 <span {...context.arrowProps}>
                   {context.isExpanded ? (
@@ -258,12 +258,3 @@ const ControlledTreeEditor = forwardRef(({ text, onChange }, ref) => {
 });
 
 export default ControlledTreeEditor;
-
-({ context, info, item, title }) => {
-  // console.log(context);
-  // return info.isRenaming ? (
-  //   <input type="text" value={title} {...context} />
-  // ) : (
-  //   <p>{title}</p>
-  // );
-};
