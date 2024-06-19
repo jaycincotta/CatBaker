@@ -71,19 +71,8 @@ textarea {
   overflow-y: auto;
 }
 
-.react-complex-tree-container {
-  font-family: Arial, sans-serif;
-  border: 1px solid #707070;
-  border-radius: 1px;
-}
-
-.react-complex-tree-node {
-  padding: 8px;
-  cursor: pointer;
-}
-
-.react-complex-tree-node .title {
-  font-weight: bold;
+.tree-item-container {
+  list-style: none;
 }
 
 .tree-item {
