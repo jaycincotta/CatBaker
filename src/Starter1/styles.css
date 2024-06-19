@@ -91,10 +91,11 @@ textarea {
 }
 
 .tree-item:hover {
-  background-color: #f7f7f7;
+  background-color: #f6f6f6;
 }
 
 .tree-item-focused {
+  font-weight: bold;
   background-color: #ffffff;
 }
 
