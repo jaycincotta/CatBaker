@@ -20,6 +20,7 @@ const ControlledTreeEditor = forwardRef(({ text, onChange }, ref) => {
   const [expandedItems, setExpandedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [error, setError] = useState();
+  const [cachedItems, setCachedItems] = useState();
   const { collapsedCount, setCollapsedCount } = useContext(AppContext);
 
   useImperativeHandle(ref, () => ({
@@ -45,12 +46,13 @@ const ControlledTreeEditor = forwardRef(({ text, onChange }, ref) => {
     if (JSON.stringify(generatedData) === JSON.stringify(items)) return;
 
     setItems(generatedData);
+    setCachedItems(generatedData);
     setExpandedItems(Object.keys(generatedData));
   }, [text]);
 
   useEffect(() => {
     if (!items || !environmentRef?.current?.linearItems?.tree) return;
-
+    if (JSON.stringify(items) === JSON.stringify(cachedItems)) return;
     buildItemsText(items);
   }, [items]);
 
