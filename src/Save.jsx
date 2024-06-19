@@ -7,7 +7,7 @@ export default function Save() {
   const dialogRef = useRef();
   const remarkRef = useRef();
 
-  const enabled = version.Id !== latestVersionId || isDirty;
+  const enabled = version?.Id !== latestVersionId || isDirty;
   const enabledClassName = enabled ? "save-enabled" : "save-disabled";
 
   function handleSaveIconClick() {
@@ -30,10 +30,17 @@ export default function Save() {
         onClick={handleSaveIconClick}
       ></i>
       <dialog ref={dialogRef}>
-        <h1>Add remark</h1>
+        <h2>Add a remark</h2>
         <textarea ref={remarkRef} />
-        <button onClick={handleSave}>Save</button>
-        <button onClick={() => dialogRef.current.close()}>Cancel</button>
+        <button className="save-btn" onClick={handleSave}>
+          Save
+        </button>
+        <button
+          className="cancel-btn"
+          onClick={() => dialogRef.current.close()}
+        >
+          Cancel
+        </button>
       </dialog>
     </div>
   );

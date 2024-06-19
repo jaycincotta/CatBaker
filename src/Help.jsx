@@ -11,10 +11,10 @@ export default function Help() {
       ></i>
       <dialog ref={dialogRef}>
         <i
-          className="fa-solid fa-xmark close-button"
+          className="x-close fa-solid fa-xmark close-button"
           onClick={() => dialogRef.current.close()}
         ></i>
-        <h4>How to use this tool:</h4>
+        <h2>How to use this tool:</h2>
         <HelpContent />
       </dialog>
     </div>
@@ -28,8 +28,8 @@ export function HelpContent() {
         Edit text in LEFT column (adding a hyphen '-' prefix creates a Child)
       </li>
       <li>Check that total line length of text fits within the RIGHT column</li>
-      <li>When done editing, SAVE changes by clicking the orange disk icon</li>
-      <li>To EXIT (without saving changes), click the black 'X' icon</li>
+      <li>When done editing, SAVE changes by clicking the disk icon</li>
+      <li>To EXIT (without saving changes), click the 'X-circle' icon</li>
     </ol>
   );
 }

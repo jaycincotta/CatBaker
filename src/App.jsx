@@ -59,7 +59,7 @@ function AppIcon() {
     <img
       src={CatBaker}
       alt="Cat Baker"
-      style={{ width: "128px", height: "128px" }}
+      style={{ width: "192px", height: "64px" }}
     />
   );
 }

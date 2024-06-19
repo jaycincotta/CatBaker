@@ -25,12 +25,12 @@
 .login-modal ol li {
   font-size: 0.75rem;
   font-weight: normal;
-  margin: 0 16px 8px -24px;
+  margin: 0 16px 8px 16px;
 }
 
 .login-modal ul {
   font-size: 0.75rem;
-  margin: 0 16px 32px 16px;
+  margin: 0 16px 0 16px;
 }
 
 .users {
@@ -38,7 +38,7 @@
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 8px;
   margin: 16px;
   padding: 0;
   padding-top: 16px;

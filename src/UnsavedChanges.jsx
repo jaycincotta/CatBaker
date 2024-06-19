@@ -29,14 +29,16 @@ export default function UnsavedChanges({ dialogRef, version }) {
   return (
     <React.Fragment>
       <dialog className="save" ref={dialogRef}>
-        <h1>Unsaved Changes</h1>
+        <h2>You Have Unsaved Changes</h2>
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        <p>
-          You have unsaved changes. Do you want to save them before moving on?
-        </p>
+        <p>Do you want to save your changes before continuing?</p>
         <textarea ref={remarkRef} />
-        <button onClick={handleSave}>Save</button>
-        <button onClick={handleDiscard}>Discard</button>
+        <button className="save-btn" onClick={handleSave}>
+          Yes, Save
+        </button>
+        <button className="cancel-btn" onClick={handleDiscard}>
+          No, Discard
+        </button>
       </dialog>
     </React.Fragment>
   );

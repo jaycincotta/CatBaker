@@ -14,14 +14,14 @@ export default function Navigation({ onNavigate }) {
         ></i>
         <i
           onClick={() => onNavigate(version.Id - 1)}
-          className="fa-solid fa-circle-caret-left"
+          className="fa-solid fa-caret-left"
         ></i>
         <p>
           {version?.Id}/{latestVersionId}
         </p>
         <i
           onClick={() => onNavigate(version.Id + 1)}
-          className="fa-solid fa-circle-caret-right"
+          className="fa-solid fa-caret-right"
         ></i>
         <i
           onClick={() => onNavigate()}
