@@ -19,7 +19,6 @@ export default function CategoryBuilder({ treeEditorRef }) {
       inputRef.current.value = version.TreeData;
     } else {
       setInputText(defaultText);
-      // setTreeText(defaultText);
       inputRef.current.value = defaultText;
     }
   }, [defaultText, version]);
@@ -33,7 +32,7 @@ export default function CategoryBuilder({ treeEditorRef }) {
     if (text.trim() === inputRef.current.value.trim()) {
       return;
     }
-    setInputText(text);
+    inputRef.current.value = text;
     setTreeText(text);
   };
 
@@ -43,7 +42,6 @@ export default function CategoryBuilder({ treeEditorRef }) {
         <textarea
           ref={inputRef}
           spellCheck="false"
-          value={inputText}
           onChange={handleInputChange}
           onPaste={handleInputChange}
           placeholder="Enter text here"
