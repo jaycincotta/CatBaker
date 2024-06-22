@@ -107,6 +107,11 @@ html {
   color: #1380b1;
 }
 
+.version-text p {
+  white-space: pre-line;
+  max-width: 640px;
+}
+
 .save h2 {
   margin: 1rem 1rem;
   padding: 0;
