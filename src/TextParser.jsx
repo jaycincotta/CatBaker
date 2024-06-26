@@ -41,16 +41,36 @@ const validateLines = (lines) => {
   return null;
 };
 
+function getDepth(str) {
+  const match = str.match(/^[-]+/); // Match one or more dashes at the beginning of the string
+  return match ? match[0].length : 0;
+}
+
 const buildTreeData = (lines) => {
   const root = { index: "root", isFolder: true, children: [] };
   const items = { root };
   const parentsStack = [root];
 
-  lines.forEach((line, index) => {
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
+    const depth = getDepth(line);
+    let rootParent = "root";
+
+    if (depth > 0) {
+      for (let i = index; i > -1; i--) {
+        const prev = lines[i];
+        if (getDepth(prev) === 0) {
+          rootParent = prev;
+          break;
+        }
+      }
+    }
+
     const parsedLine = parse(line);
     const newItem = {
       index: `item-${index}`,
       id: parsedLine.caption,
+      textId: `${rootParent}|${line}`,
       data: {
         caption: parsedLine.caption,
         dataId: parsedLine.dataId,
@@ -74,7 +94,38 @@ const buildTreeData = (lines) => {
     } else {
       parentsStack[parsedLine.depth + 1] = newItem;
     }
-  });
+  }
+
+  // lines.forEach((line, index) => {
+  //   const parsedLine = parse(line);
+  //   const newItem = {
+  //     index: `item-${index}`,
+  //     id: parsedLine.caption,
+  //     textId: line,
+  //     data: {
+  //       caption: parsedLine.caption,
+  //       dataId: parsedLine.dataId,
+  //     },
+  //     isFolder: true,
+  //     children: [],
+  //   };
+
+  //   while (parentsStack.length > parsedLine.depth + 1) {
+  //     parentsStack.pop();
+  //   }
+
+  //   const currentParent = parentsStack[parentsStack.length - 1];
+  //   currentParent.children.push(newItem.index);
+  //   currentParent.isFolder = true;
+
+  //   items[newItem.index] = newItem;
+
+  //   if (parsedLine.depth >= parentsStack.length) {
+  //     parentsStack.push(newItem);
+  //   } else {
+  //     parentsStack[parsedLine.depth + 1] = newItem;
+  //   }
+  // });
 
   return items;
 };

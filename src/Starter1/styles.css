@@ -84,19 +84,21 @@ textarea {
   padding: 4px;
   cursor: pointer;
   width: 100%;
-  line-height: 1.5rem;
+  line-height: 1.38rem;
   border-width: thin 0 0 0;
   border-color: #dfdfdf;
   border-style: solid;
+  transition: all 0.2s ease-in;
 }
 
 .tree-item:hover {
-  background-color: #f6f6f6;
+  background-color: #e7e7e7;
 }
 
 .tree-item-focused {
-  font-weight: bold;
-  background-color: #ffffff;
+  /* background-color: #eceff0; */
+  background-color: #dfe7f0;
+  transition: all 0.2s ease-in;
 }
 
 .tree-item-arrow {
@@ -107,4 +109,5 @@ textarea {
 
 .tree-item p {
   margin: 0 8px;
+  text-align: start;
 }
