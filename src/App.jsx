@@ -26,8 +26,8 @@ export default function App() {
     }
   }
 
-  function handleTreeUnlock() {
-    treeEditorRef.current.unlockDragAndDrop();
+  function handleLockClick() {
+    treeEditorRef.current.collapseExpand();
   }
 
   return (
@@ -40,7 +40,7 @@ export default function App() {
       <div className="App-content">
         <CategoryBuilder treeEditorRef={treeEditorRef} />
         <div className="toolbar">
-          <AppLock onClick={handleTreeUnlock} />
+          <AppLock onClick={handleLockClick} />
           <Save />
           <Help />
           <SelectUser />
