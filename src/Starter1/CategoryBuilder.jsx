@@ -44,6 +44,10 @@ export default function CategoryBuilder({ treeEditorRef }) {
     if (e.key.includes("Arrow")) {
       selectTreeItem();
     }
+    // Disabling renaming, as it causes the text-id property to become stale if not updated. Updating a single text-id property isn't sufficient, if the tree item is a parent then the children's text-id properties will also be stale.
+    // else if (e.key === "F2") {
+    //   treeEditorRef.current.focusSelectedItem();
+    // }
   };
 
   const selectTreeItem = () => {

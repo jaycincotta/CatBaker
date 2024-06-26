@@ -42,6 +42,7 @@ const ControlledTreeEditor = forwardRef(
       selectItem(textId) {
         if (!items) return;
 
+        // find item w/ matching textid [parent|child]
         const item = Object.values(items).find((item) => {
           if (item.index === "root") return false;
           return item.textId === textId.trim();
@@ -49,8 +50,10 @@ const ControlledTreeEditor = forwardRef(
 
         if (!item) return;
 
+        // select item on tree control
         setSelectedItems([item.index]);
 
+        // scroll item into view
         const treeItemElement = document.querySelector(
           `[text-id="${item.textId}"]`,
         );
@@ -65,6 +68,12 @@ const ControlledTreeEditor = forwardRef(
       setScrollTopPosition(position) {
         if (collapsedCount > 0) return;
         containerRef.current.scrollTop = position;
+      },
+      focusSelectedItem() {
+        const focusedElement = document.querySelector(
+          `[data-rct-item-id="${focusedItem}"]`,
+        );
+        focusedElement.focus();
       },
     }));
 
@@ -186,6 +195,7 @@ const ControlledTreeEditor = forwardRef(
       }
     };
 
+    // The text-id also needs to be updated for the current item and any of it's children to enable renaming
     const onRenameItem = (item, name) => {
       setItems((prevItems) => {
         const updatedItems = {
@@ -272,7 +282,7 @@ const ControlledTreeEditor = forwardRef(
               }) => {
                 const treeItem = item.props
                   ? items[item.props.parentId]
-                  : { id: "collapsed-item" };
+                  : { id: "collapsed-item", index: "" };
                 const InteractiveComponent = context.isRenaming
                   ? "div"
                   : "button";
