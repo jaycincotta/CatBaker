@@ -47,7 +47,6 @@ export default function CategoryBuilder({ treeEditorRef }) {
   };
 
   const selectTreeItem = () => {
-    console.log("selectTreeItem");
     const focusedLine = findFocusedLine();
     treeEditorRef.current.selectItem(
       `${focusedLine.parent}|${focusedLine.line}`,
@@ -151,8 +150,6 @@ export default function CategoryBuilder({ treeEditorRef }) {
     const scrollPosition = lineIndex * lineHeight - 40;
 
     inputRef.current.scrollTo({ top: scrollPosition, behavior: "smooth" });
-
-    console.log(textStartIndex, child.length);
 
     inputRef.current.setSelectionRange(
       textStartIndex,
